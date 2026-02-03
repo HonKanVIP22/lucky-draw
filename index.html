@@ -46,7 +46,7 @@ h1{
   width:84px;
   height:118px;
   background:linear-gradient(180deg,#ffeb3b,#ffc107);
-  color:#5d4037; /* số màu đậm cho dễ đọc */
+  color:#5d4037;
   font-size:66px;
   font-weight:900;
   border-radius:16px;
@@ -61,7 +61,7 @@ h1{
   height:190px;
   border-radius:50%;
   background:radial-gradient(circle,#ffeb3b,#ffc107);
-  color:#5d4037; /* chữ QUAY */
+  color:#5d4037;
   font-size:34px;
   font-weight:900;
   border:none;
@@ -185,6 +185,21 @@ th,td{padding:14px}
   box-shadow:0 6px 18px rgba(0,0,0,.4);
 }
 
+/* ===== HORSE RUN ===== */
+.horse-run{
+  position:fixed;
+  bottom:60px;
+  left:-220px;
+  width:200px;
+  z-index:50;
+  animation:horseRun 12s linear infinite;
+  pointer-events:none;
+}
+.horse-run img{
+  width:100%;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.6));
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes floatUp{
   from{transform:translateY(0) rotate(0);opacity:1}
@@ -205,6 +220,10 @@ th,td{padding:14px}
 @keyframes textBounce{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-6px)}
+}
+@keyframes horseRun{
+  from{left:-220px;}
+  to{left:110%;}
 }
 </style>
 </head>
@@ -258,6 +277,11 @@ th,td{padding:14px}
   </table>
 </div>
 
+</div>
+
+<!-- HORSE -->
+<div class="horse-run">
+  <img src="ngua.png" alt="Ngựa chạy">
 </div>
 
 <!-- THAN TAI -->
@@ -365,13 +389,17 @@ function resetAll(){
   document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
 
-/* THAN TAI LẮC MẠNH KHI QUAY */
+/* THAN TAI + NGỰA CHẠY NHANH KHI QUAY */
 const spinBtnEl=document.getElementById("spinBtn");
 const thanTai=document.querySelector(".thantai-box");
+const horse=document.querySelector(".horse-run");
+
 spinBtnEl.addEventListener("click",()=>{
   thanTai.style.animation="thantaiSwing .6s ease-in-out infinite";
+  horse.style.animation="horseRun 6s linear infinite";
   setTimeout(()=>{
     thanTai.style.animation="thantaiSwing 3s ease-in-out infinite";
+    horse.style.animation="horseRun 12s linear infinite";
   },3000);
 });
 </script>
