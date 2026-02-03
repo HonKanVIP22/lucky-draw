@@ -29,6 +29,11 @@ h1{
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
+.title-icon{
+  display:inline-block;
+  animation:rotateSlow 8s linear infinite;
+  margin-right:14px;
+}
 
 /* ===== SLOT ===== */
 .slot{
@@ -92,9 +97,9 @@ h1{
 .export{background:#d50000;color:#fff}
 .reset{background:#0d47a1;color:#fff}
 
-/* ===== WINNER CENTER (FIXED) ===== */
+/* ===== WINNER CENTER ===== */
 #winnerBox{
-  display:none;            /* ✅ CHỈ ĐỂ NONE */
+  display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.75);
@@ -103,10 +108,11 @@ h1{
   justify-content:center;
 }
 #winnerContent{
-  background:rgba(0,0,0,.8);
+  background:rgba(0,0,0,.85);
   padding:40px 60px;
   border-radius:30px;
   box-shadow:0 0 50px rgba(255,215,0,.9);
+  position:relative;
 }
 #winnerContent h2{
   font-size:36px;
@@ -114,13 +120,27 @@ h1{
   margin-bottom:16px;
 }
 #winnerName{
-  font-size:52px;
+  font-size:56px;
   font-weight:900;
 }
 #winnerCode{
   margin-top:12px;
   font-size:22px;
   opacity:.9;
+}
+
+/* ===== SPARKLE ===== */
+.sparkle{
+  position:absolute;
+  font-size:26px;
+  animation:sparkle 1.5s ease-in-out infinite;
+}
+
+/* ===== CONFETTI ===== */
+.confetti{
+  position:absolute;
+  font-size:26px;
+  animation:floatUp 2.8s linear infinite;
 }
 
 /* ===== RESULT ===== */
@@ -136,12 +156,25 @@ table{width:100%;border-collapse:collapse}
 th,td{padding:14px}
 .prize{color:#ffd54f;font-weight:800}
 .code{font-family:monospace;font-size:20px}
+
+/* ===== ANIMATIONS ===== */
+@keyframes floatUp{
+  from{transform:translateY(0) rotate(0);opacity:1}
+  to{transform:translateY(-140px) rotate(360deg);opacity:0}
+}
+@keyframes sparkle{
+  0%,100%{opacity:.2;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.2)}
+}
+@keyframes rotateSlow{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
 </style>
 </head>
 
 <body>
 
-<!-- PANEL -->
 <div class="right-panel">
   <select id="prize">
     <option>Giải Nhất</option>
@@ -154,24 +187,28 @@ th,td{padding:14px}
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
 </div>
 
-<!-- WINNER DISPLAY -->
 <div id="winnerBox">
   <div id="winnerContent">
     <h2>🎉 CHÚC MỪNG 🎉</h2>
+
+    <div class="sparkle" style="top:-10px;left:-20px;">✨</div>
+    <div class="sparkle" style="top:-10px;right:-20px;animation-delay:.5s">✨</div>
+    <div class="sparkle" style="bottom:-10px;left:45%;animation-delay:1s">⭐</div>
+
     <div id="winnerName"></div>
     <div id="winnerCode"></div>
   </div>
 </div>
 
+<div id="confettiArea"></div>
+
 <div class="overlay">
 
-<h1>QUAY SỐ MAY MẮN</h1>
+<h1><span class="title-icon">🎯</span>QUAY SỐ MAY MẮN</h1>
 
 <div class="slot">
-  <div class="digit">0</div>
-  <div class="digit">0</div>
-  <div class="digit">0</div>
-  <div class="digit">0</div>
+  <div class="digit">0</div><div class="digit">0</div>
+  <div class="digit">0</div><div class="digit">0</div>
   <div class="digit">0</div>
 </div>
 
@@ -181,11 +218,7 @@ th,td{padding:14px}
   <h2>🏆 DANH SÁCH TRÚNG THƯỞNG</h2>
   <table>
     <thead>
-      <tr>
-        <th>Giải</th>
-        <th>Mã số</th>
-        <th>Họ tên</th>
-      </tr>
+      <tr><th>Giải</th><th>Mã số</th><th>Họ tên</th></tr>
     </thead>
     <tbody id="resultTable"></tbody>
   </table>
@@ -222,20 +255,14 @@ function spinDigits(target){
 function draw(){
   let count=parseInt(drawCount.value)||1;
   if(count>items.length){alert("Không đủ người");return;}
-
   let prizeValue=prize.value;
   let delay=0;
-
   for(let k=0;k<count;k++){
     setTimeout(()=>{
       let i=Math.floor(Math.random()*items.length);
       let item=items.splice(i,1)[0];
       spinDigits(item);
-
-      setTimeout(()=>{
-        showWinner(item,prizeValue);
-      },1200);
-
+      setTimeout(()=>showWinner(item,prizeValue),1200);
     },delay);
     delay+=4500;
   }
@@ -246,8 +273,21 @@ function showWinner(item,prizeValue){
   winnerCode.innerText="Mã số: "+item.code;
   winnerBox.style.display="flex";
 
+  let area=document.getElementById("confettiArea");
+  area.innerHTML="";
+  for(let i=0;i<14;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.innerText=["🎊","🎉","✨","⭐"][Math.floor(Math.random()*4)];
+    c.style.left=Math.random()*100+"%";
+    c.style.bottom="10%";
+    c.style.animationDelay=Math.random()+"s";
+    area.appendChild(c);
+  }
+
   setTimeout(()=>{
     winnerBox.style.display="none";
+    area.innerHTML="";
     results.push({prize:prizeValue,...item});
     localStorage.setItem("ITEMS",JSON.stringify(items));
     localStorage.setItem("RESULTS",JSON.stringify(results));
