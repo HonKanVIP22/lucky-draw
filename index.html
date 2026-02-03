@@ -3,57 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <title>Lucky Draw Pro</title>
+
 <style>
-body{
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
   font-family:'Segoe UI',Arial;
+}
+
+/* ===== NỀN ẢNH DO BẠN CHỌN ===== */
+body{
+  background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url("nen.jpg") no-repeat center center fixed;
+  background-size:cover;
   color:#fff;
   text-align:center;
-  margin:0;
 }
-.container{padding:40px}
-.logo{height:80px;margin-bottom:10px}
-h1{font-size:46px;margin:10px 0}
+
+/* ===== CANH GIỮA FULL MÀN HÌNH ===== */
+.container{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+/* ===== LOGO & TIÊU ĐỀ ===== */
+.logo{height:90px;margin-bottom:10px}
+h1{
+  font-size:50px;
+  margin:10px 0 30px;
+  letter-spacing:3px;
+}
+
+/* ===== KHUNG QUAY ===== */
 .card{
-  background:#fff;color:#333;
+  background:rgba(255,255,255,.95);
+  color:#333;
   display:inline-block;
-  padding:30px 50px;
-  border-radius:18px;
-  min-width:460px;
-  box-shadow:0 25px 50px rgba(0,0,0,.35)
+  padding:40px 60px;
+  border-radius:22px;
+  min-width:500px;
+  box-shadow:0 30px 70px rgba(0,0,0,.5);
+  backdrop-filter:blur(6px);
 }
+
+/* ===== FORM ===== */
 select,button{
-  font-size:18px;
-  padding:8px 14px;
-  margin-top:10px
+  font-size:20px;
+  padding:10px 18px;
+  margin-top:14px;
 }
+
+/* ===== NÚT QUAY ===== */
 button{
-  background:#e63946;
+  background:linear-gradient(135deg,#e63946,#ff6b6b);
   color:#fff;
   border:none;
-  border-radius:30px;
-  padding:14px 40px;
-  font-size:26px;
-  cursor:pointer
+  border-radius:40px;
+  padding:16px 50px;
+  font-size:30px;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(230,57,70,.6);
 }
 button:hover{opacity:.9}
+
+/* ===== KẾT QUẢ ===== */
 #result{
-  font-size:60px;
-  font-weight:bold;
+  font-size:64px;
+  font-weight:900;
   color:#e63946;
-  margin-top:25px;
-  min-height:70px;
-  letter-spacing:2px;
+  margin-top:30px;
+  min-height:80px;
+  letter-spacing:3px;
+  text-shadow:0 6px 20px rgba(230,57,70,.6);
+  transition:transform .2s ease;
 }
+
+/* ===== LOG ===== */
 #log{
-  margin-top:20px;
+  margin-top:25px;
   text-align:left;
   max-height:220px;
   overflow:auto;
-  font-size:15px
+  font-size:16px
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -61,7 +101,6 @@ button:hover{opacity:.9}
   <h1>🎯 QUAY SỐ MAY MẮN</h1>
 
   <div class="card">
-
     <div>
       <strong>🎁 Chọn giải:</strong><br>
       <select id="prize">
@@ -83,7 +122,7 @@ button:hover{opacity:.9}
 </div>
 
 <script>
-// ================= DANH SÁCH QUAY (IMPORT SẴN) =================
+// ================= DANH SÁCH QUAY =================
 let items = [
   { code:"001", name:"Nguyễn Văn A" },
   { code:"002", name:"Trần Thị B" },
@@ -95,67 +134,54 @@ let items = [
   { code:"008", name:"Bùi Thị H" },
   { code:"009", name:"Ngô Văn I" },
   { code:"010", name:"Dương Thị K" }
-  // 👉 thêm tới 70 người vẫn OK
 ];
 
 let results = [];
 
-// ================= QUAY SỐ HIỆU ỨNG =================
+// ================= QUAY SỐ =================
 function draw(){
-  if(items.length === 0){
-    document.getElementById("result").innerText = "HẾT DANH SÁCH";
+  if(items.length===0){
+    document.getElementById("result").innerText="HẾT DANH SÁCH";
     return;
   }
 
-  let duration = 3000; // thời gian quay (ms)
-  let intervalTime = 60;
-  let start = Date.now();
+  let duration=3000;
+  let start=Date.now();
   let temp;
 
-  let interval = setInterval(()=>{
-    temp = items[Math.floor(Math.random()*items.length)];
-    document.getElementById("result").innerText =
-      temp.code + " - " + temp.name;
+  let interval=setInterval(()=>{
+    temp=items[Math.floor(Math.random()*items.length)];
+    let result=document.getElementById("result");
+    result.innerText=temp.code+" - "+temp.name;
+    result.style.transform="scale("+(1+Math.random()*0.06)+")";
 
-    // hiệu ứng phóng nhẹ
-    document.getElementById("result").style.transform =
-      "scale(" + (1 + Math.random()*0.05) + ")";
-
-    if(Date.now() - start > duration){
+    if(Date.now()-start>duration){
       clearInterval(interval);
-
-      let index = items.indexOf(temp);
-      items.splice(index,1);
-
-      let prize = document.getElementById("prize").value;
+      items.splice(items.indexOf(temp),1);
+      let prize=document.getElementById("prize").value;
       results.push({prize,...temp});
       log(prize,temp);
 
-      // hiệu ứng trúng giải
-      document.getElementById("result").style.transform = "scale(1.2)";
-      setTimeout(()=>{
-        document.getElementById("result").style.transform = "scale(1)";
-      },300);
+      result.style.transform="scale(1.25)";
+      setTimeout(()=>result.style.transform="scale(1)",300);
     }
-  }, intervalTime);
+  },60);
 }
 
-// ================= LOG KẾT QUẢ =================
+// ================= LOG =================
 function log(prize,item){
-  document.getElementById("log").innerHTML +=
+  document.getElementById("log").innerHTML+=
     "🏆 <b>"+prize+"</b>: "+item.code+" - "+item.name+"<br>";
 }
 
-// ================= XUẤT EXCEL =================
+// ================= XUẤT FILE =================
 function exportCSV(){
   let csv="Prize,Code,Name\n";
-  results.forEach(r=>{
-    csv += `${r.prize},${r.code},${r.name}\n`;
-  });
-  let blob = new Blob([csv],{type:"text/csv"});
-  let a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "ketqua_quayso.csv";
+  results.forEach(r=>csv+=`${r.prize},${r.code},${r.name}\n`);
+  let blob=new Blob([csv],{type:"text/csv"});
+  let a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="ketqua_quayso.csv";
   a.click();
 }
 </script>
