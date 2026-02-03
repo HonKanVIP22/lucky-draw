@@ -16,7 +16,7 @@ body{
 .overlay{
   background:rgba(0,0,0,0.35);
   min-height:100vh;
-  padding-top:50px;
+  padding-top:40px;
 }
 
 /* ===== TITLE ===== */
@@ -24,15 +24,37 @@ h1{
   font-size:64px;
   font-weight:900;
   letter-spacing:4px;
-  text-transform:uppercase;
-  margin-bottom:28px;
-  background:linear-gradient(90deg,#fff176,#ffeb3b,#ffc107,#fff176);
+  margin-bottom:20px;
+  background:linear-gradient(90deg,#fff176,#ffeb3b,#ffc107);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  text-shadow:
-    0 4px 15px rgba(0,0,0,.6),
-    0 0 25px rgba(255,215,0,.6);
 }
+
+/* ===== RIGHT PANEL ===== */
+.right-panel{
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:230px;
+  background:rgba(0,0,0,.55);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 10px 35px rgba(0,0,0,.6);
+}
+.right-panel select,
+.right-panel input,
+.right-panel button{
+  width:100%;
+  margin-bottom:12px;
+  padding:10px;
+  border-radius:14px;
+  border:none;
+  font-size:14px;
+  font-weight:700;
+}
+.right-panel button{cursor:pointer}
+#exportBtn{background:#c62828;color:#fff}
+#resetBtn{background:#1565c0;color:#fff}
 
 /* ===== SLOT ===== */
 .slot{
@@ -45,16 +67,12 @@ h1{
   width:84px;
   height:118px;
   background:linear-gradient(180deg,#2e7d32,#1b5e20);
-  color:#fff;
   font-size:66px;
   font-weight:900;
   border-radius:16px;
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:
-    inset 0 -10px 0 rgba(0,0,0,.4),
-    0 12px 30px rgba(0,0,0,.6);
 }
 
 /* ===== SPIN BUTTON ===== */
@@ -62,96 +80,57 @@ h1{
   width:190px;
   height:190px;
   border-radius:50%;
-  background:radial-gradient(circle at top,#66bb6a,#1b5e20);
-  color:#fff;
+  background:radial-gradient(circle,#66bb6a,#1b5e20);
   font-size:34px;
   font-weight:900;
   border:none;
   cursor:pointer;
-  box-shadow:0 18px 45px rgba(0,0,0,.7);
-}
-#spinBtn:hover{transform:scale(1.1)}
-
-/* ===== RIGHT PANEL ===== */
-.right-panel{
-  position:fixed;
-  top:20px;
-  right:20px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  z-index:999;
-  background:rgba(0,0,0,.35);
-  padding:12px;
-  border-radius:16px;
-  backdrop-filter:blur(6px);
 }
 
-/* select + input nhỏ */
-.right-panel select,
-.right-panel input{
-  width:150px;
-  padding:8px 12px;
-  font-size:14px;
-  font-weight:600;
-  border-radius:12px;
-  border:2px solid rgba(255,255,255,.35);
-  background:rgba(0,0,0,.45);
-  color:#fff;
-  text-align:center;
+/* ===== WINNER DISPLAY ===== */
+#winnerBox{
+  display:none;
+  margin:20px auto;
+  padding:30px;
+  width:80%;
+  max-width:700px;
+  background:rgba(0,0,0,.75);
+  border-radius:26px;
+  box-shadow:0 0 40px rgba(255,215,0,.9);
 }
-
-/* nút nhỏ */
-.right-panel button{
-  padding:8px 18px;
-  font-size:14px;
-  font-weight:700;
-  border-radius:30px;
-  border:none;
-  cursor:pointer;
-  box-shadow:0 6px 16px rgba(0,0,0,.5);
+#winnerBox h2{
+  font-size:36px;
+  color:#ffeb3b;
+  margin-bottom:12px;
 }
-.right-panel button:hover{transform:scale(1.06)}
-
-.export{background:#d50000;color:#fff}
-.reset{background:#0d47a1;color:#fff}
+#winnerName{
+  font-size:46px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+#winnerCode{
+  margin-top:10px;
+  font-size:22px;
+  opacity:.9;
+}
 
 /* ===== RESULT ===== */
 .result-box{
-  margin:44px auto;
+  margin:50px auto;
   width:88%;
   max-width:980px;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,.5);
   border-radius:24px;
-  padding:24px 30px;
+  padding:24px;
 }
-table{
-  width:100%;
-  border-collapse:collapse;
-}
+table{width:100%;border-collapse:collapse}
 th,td{padding:14px}
 .prize{color:#ffd54f;font-weight:800}
-.code{font-family:monospace;font-size:20px}
+.code{font-family:monospace;font-size:18px}
 </style>
 </head>
 
 <body>
-
-<!-- PANEL GÓC PHẢI -->
-<div class="right-panel">
-  <select id="prize">
-    <option>Giải Nhất</option>
-    <option>Giải Nhì</option>
-    <option>Giải Ba</option>
-    <option>Khuyến Khích</option>
-  </select>
-
-  <input id="drawCount" type="number" value="1" min="1" title="Số người trúng / lượt">
-
-  <button class="export" onclick="exportCSV()">📥 Xuất</button>
-  <button class="reset" onclick="resetAll()">🔄 Reset</button>
-</div>
-
 <div class="overlay">
 
 <h1>QUAY SỐ MAY MẮN</h1>
@@ -165,6 +144,13 @@ th,td{padding:14px}
 </div>
 
 <button id="spinBtn" onclick="draw()">QUAY</button>
+
+<!-- HIỂN THỊ NGƯỜI TRÚNG -->
+<div id="winnerBox">
+  <h2>🎉 CHÚC MỪNG 🎉</h2>
+  <div id="winnerName"></div>
+  <div id="winnerCode"></div>
+</div>
 
 <div class="result-box">
   <h2>🏆 DANH SÁCH TRÚNG THƯỞNG</h2>
@@ -180,6 +166,21 @@ th,td{padding:14px}
   </table>
 </div>
 
+</div>
+
+<!-- PANEL PHẢI -->
+<div class="right-panel">
+  <select id="prize">
+    <option>Giải Nhất</option>
+    <option>Giải Nhì</option>
+    <option>Giải Ba</option>
+    <option>Khuyến Khích</option>
+  </select>
+
+  <input id="drawCount" type="number" value="1" min="1">
+
+  <button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button>
+  <button id="resetBtn" onclick="resetAll()">🔄 Reset</button>
 </div>
 
 <script>
@@ -212,10 +213,10 @@ function spinDigits(target){
 }
 
 function draw(){
-  let count=parseInt(document.getElementById("drawCount").value)||1;
-  if(count>items.length){alert("Không đủ người trong danh sách");return;}
+  let count=parseInt(drawCount.value)||1;
+  if(count>items.length){alert("Không đủ người");return;}
 
-  let prize=document.getElementById("prize").value;
+  let prize=prizeSelect=prize.value;
   let delay=0;
 
   for(let k=0;k<count;k++){
@@ -223,20 +224,34 @@ function draw(){
       let i=Math.floor(Math.random()*items.length);
       let item=items.splice(i,1)[0];
       spinDigits(item);
-      results.push({prize,...item});
-      localStorage.setItem(KEY_ITEMS,JSON.stringify(items));
-      localStorage.setItem(KEY_RESULTS,JSON.stringify(results));
-      setTimeout(renderTable,1200);
+
+      setTimeout(()=>{
+        showWinner(item,prize);
+      },1200);
+
     },delay);
-    delay+=1400;
+    delay+=4000;
   }
 }
 
+function showWinner(item,prize){
+  winnerName.innerText=item.name;
+  winnerCode.innerText="Mã số: "+item.code;
+  winnerBox.style.display="block";
+
+  setTimeout(()=>{
+    winnerBox.style.display="none";
+    results.push({prize,...item});
+    localStorage.setItem(KEY_ITEMS,JSON.stringify(items));
+    localStorage.setItem(KEY_RESULTS,JSON.stringify(results));
+    renderTable();
+  },3000);
+}
+
 function renderTable(){
-  let tb=document.getElementById("resultTable");
-  tb.innerHTML="";
+  resultTable.innerHTML="";
   results.forEach(r=>{
-    tb.innerHTML+=`
+    resultTable.innerHTML+=`
       <tr>
         <td class="prize">${r.prize}</td>
         <td class="code">${r.code}</td>
@@ -260,7 +275,6 @@ function resetAll(){
   items=[...defaultItems];
   results=[];
   renderTable();
-  document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
 </script>
 </body>
