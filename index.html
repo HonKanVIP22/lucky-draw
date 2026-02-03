@@ -92,14 +92,13 @@ h1{
 .export{background:#d50000;color:#fff}
 .reset{background:#0d47a1;color:#fff}
 
-/* ===== WINNER CENTER ===== */
+/* ===== WINNER CENTER (FIXED) ===== */
 #winnerBox{
-  display:none;
+  display:none;            /* ✅ CHỈ ĐỂ NONE */
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.75);
   z-index:9999;
-  display:flex;
   align-items:center;
   justify-content:center;
 }
@@ -224,7 +223,7 @@ function draw(){
   let count=parseInt(drawCount.value)||1;
   if(count>items.length){alert("Không đủ người");return;}
 
-  let prize=prize.value;
+  let prizeValue=prize.value;
   let delay=0;
 
   for(let k=0;k<count;k++){
@@ -234,7 +233,7 @@ function draw(){
       spinDigits(item);
 
       setTimeout(()=>{
-        showWinner(item,prize);
+        showWinner(item,prizeValue);
       },1200);
 
     },delay);
@@ -242,14 +241,14 @@ function draw(){
   }
 }
 
-function showWinner(item,prize){
+function showWinner(item,prizeValue){
   winnerName.innerText=item.name;
   winnerCode.innerText="Mã số: "+item.code;
   winnerBox.style.display="flex";
 
   setTimeout(()=>{
     winnerBox.style.display="none";
-    results.push({prize,...item});
+    results.push({prize:prizeValue,...item});
     localStorage.setItem("ITEMS",JSON.stringify(items));
     localStorage.setItem("RESULTS",JSON.stringify(results));
     renderTable();
