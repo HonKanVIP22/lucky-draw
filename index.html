@@ -71,7 +71,7 @@ select{
   transform:scale(1.08);
 }
 #exportBtn{
-  margin-top:30px;
+  margin-top:25px;
   background:#e53935;
   color:#fff;
   padding:14px 40px;
@@ -81,6 +81,25 @@ select{
   cursor:pointer;
   box-shadow:0 10px 25px rgba(0,0,0,.5);
 }
+
+/* ===== RESET BUTTON ===== */
+#resetBtn{
+  margin-top:15px;
+  background:#1565c0;
+  color:#fff;
+  padding:14px 44px;
+  border-radius:40px;
+  font-size:20px;
+  font-weight:bold;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 12px 30px rgba(0,0,0,.6);
+}
+#resetBtn:hover{
+  background:#1e88e5;
+  transform:scale(1.06);
+}
+
 #log{
   margin:30px auto;
   max-width:600px;
@@ -115,7 +134,8 @@ select{
   </div>
 
   <button id="spinBtn" onclick="draw()">QUAY</button><br>
-  <button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button>
+  <button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button><br>
+  <button id="resetBtn" onclick="resetAll()">🔄 RESET</button>
 
   <div id="log"></div>
 </div>
@@ -134,11 +154,11 @@ const defaultItems = [
  {code:"00005",name:"Hoàng Văn E"},
 ];
 
-/* ====== LOAD TRẠNG THÁI ====== */
+/* ====== LOAD ====== */
 let items = JSON.parse(localStorage.getItem(KEY_ITEMS)) || [...defaultItems];
 let results = JSON.parse(localStorage.getItem(KEY_RESULTS)) || [];
 
-/* ====== PHỤC HỒI LOG SAU RELOAD ====== */
+/* ====== PHỤC HỒI LOG ====== */
 window.onload = ()=>{
   results.forEach(r=>{
     document.getElementById("log").innerHTML +=
@@ -146,7 +166,7 @@ window.onload = ()=>{
   });
 };
 
-/* ====== SLOT EFFECT ====== */
+/* ===== SLOT ===== */
 function spinDigits(target){
   let digits=document.querySelectorAll(".digit");
   let loop=0;
@@ -168,13 +188,12 @@ function spinDigits(target){
   },70);
 }
 
-/* ====== QUAY ====== */
+/* ===== QUAY ===== */
 function draw(){
   if(items.length===0){
     alert("HẾT DANH SÁCH");
     return;
   }
-
   let i=Math.floor(Math.random()*items.length);
   let item=items.splice(i,1)[0];
   spinDigits(item);
@@ -182,7 +201,6 @@ function draw(){
   let prize=document.getElementById("prize").value;
   results.push({prize,...item});
 
-  /* LƯU TRẠNG THÁI */
   localStorage.setItem(KEY_ITEMS,JSON.stringify(items));
   localStorage.setItem(KEY_RESULTS,JSON.stringify(results));
 
@@ -192,7 +210,7 @@ function draw(){
   },2000);
 }
 
-/* ====== EXPORT ====== */
+/* ===== EXPORT ===== */
 function exportCSV(){
   let csv="Prize,Code,Name\n";
   results.forEach(r=>{
@@ -205,15 +223,24 @@ function exportCSV(){
   a.click();
 }
 
-/* ====== RESET BÍ MẬT ======
-   Ctrl + Alt + R */
+/* ===== RESET ===== */
+function resetAll(){
+  if(!confirm("RESET toàn bộ danh sách & kết quả?")) return;
+
+  localStorage.removeItem(KEY_ITEMS);
+  localStorage.removeItem(KEY_RESULTS);
+
+  items=[...defaultItems];
+  results=[];
+
+  document.getElementById("log").innerHTML="";
+  document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
+}
+
+/* ===== PHÍM TẮT ===== */
 document.addEventListener("keydown",e=>{
   if(e.ctrlKey && e.altKey && e.key==="R"){
-    if(confirm("RESET TOÀN BỘ KẾT QUẢ?")){
-      localStorage.removeItem(KEY_ITEMS);
-      localStorage.removeItem(KEY_RESULTS);
-      location.reload();
-    }
+    resetAll();
   }
 });
 </script>
