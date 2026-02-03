@@ -34,23 +34,6 @@ h1{
     0 0 25px rgba(255,215,0,.6);
 }
 
-/* ===== INPUT / SELECT ===== */
-select{
-  padding:14px 28px;
-  font-size:20px;
-  font-weight:600;
-  border-radius:18px;
-  border:2px solid rgba(255,255,255,.35);
-  background:rgba(0,0,0,.45);
-  color:#fff;
-  backdrop-filter:blur(6px);
-  box-shadow:0 8px 25px rgba(0,0,0,.6);
-  cursor:pointer;
-  margin-bottom:22px;
-  text-align:center;
-}
-select:hover{border-color:#ffeb3b}
-
 /* ===== SLOT ===== */
 .slot{
   display:flex;
@@ -98,13 +81,19 @@ select:hover{border-color:#ffeb3b}
   flex-direction:column;
   gap:10px;
   z-index:999;
+  background:rgba(0,0,0,.35);
+  padding:12px;
+  border-radius:16px;
+  backdrop-filter:blur(6px);
 }
 
-/* input nhỏ */
+/* select + input nhỏ */
+.right-panel select,
 .right-panel input{
-  width:120px;
+  width:150px;
   padding:8px 12px;
-  font-size:15px;
+  font-size:14px;
+  font-weight:600;
   border-radius:12px;
   border:2px solid rgba(255,255,255,.35);
   background:rgba(0,0,0,.45);
@@ -124,8 +113,8 @@ select:hover{border-color:#ffeb3b}
 }
 .right-panel button:hover{transform:scale(1.06)}
 
-.right-panel .export{background:#d50000;color:#fff}
-.right-panel .reset{background:#0d47a1;color:#fff}
+.export{background:#d50000;color:#fff}
+.reset{background:#0d47a1;color:#fff}
 
 /* ===== RESULT ===== */
 .result-box{
@@ -150,7 +139,15 @@ th,td{padding:14px}
 
 <!-- PANEL GÓC PHẢI -->
 <div class="right-panel">
+  <select id="prize">
+    <option>Giải Nhất</option>
+    <option>Giải Nhì</option>
+    <option>Giải Ba</option>
+    <option>Khuyến Khích</option>
+  </select>
+
   <input id="drawCount" type="number" value="1" min="1" title="Số người trúng / lượt">
+
   <button class="export" onclick="exportCSV()">📥 Xuất</button>
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
 </div>
@@ -158,14 +155,6 @@ th,td{padding:14px}
 <div class="overlay">
 
 <h1>QUAY SỐ MAY MẮN</h1>
-
-🎁 <b>Chọn giải</b><br>
-<select id="prize">
-  <option>Giải Nhất</option>
-  <option>Giải Nhì</option>
-  <option>Giải Ba</option>
-  <option>Khuyến Khích</option>
-</select>
 
 <div class="slot">
   <div class="digit">0</div>
