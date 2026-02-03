@@ -34,8 +34,8 @@ h1{
     0 0 25px rgba(255,215,0,.6);
 }
 
-/* ===== SELECT ===== */
-select{
+/* ===== INPUT / SELECT ===== */
+select,input{
   padding:14px 28px;
   font-size:20px;
   font-weight:600;
@@ -46,9 +46,10 @@ select{
   backdrop-filter:blur(6px);
   box-shadow:0 8px 25px rgba(0,0,0,.6);
   cursor:pointer;
-  margin-bottom:28px;
+  margin-bottom:22px;
+  text-align:center;
 }
-select:hover{border-color:#ffeb3b}
+select:hover,input:hover{border-color:#ffeb3b}
 
 /* ===== SLOT ===== */
 .slot{
@@ -71,10 +72,9 @@ select:hover{border-color:#ffeb3b}
   box-shadow:
     inset 0 -10px 0 rgba(0,0,0,.4),
     0 12px 30px rgba(0,0,0,.6);
-  transition:transform .12s;
 }
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTON ===== */
 #spinBtn{
   width:190px;
   height:190px;
@@ -83,60 +83,25 @@ select:hover{border-color:#ffeb3b}
   color:#fff;
   font-size:34px;
   font-weight:900;
-  letter-spacing:2px;
   border:none;
   cursor:pointer;
-  box-shadow:
-    0 18px 45px rgba(0,0,0,.7),
-    inset 0 -10px 0 rgba(0,0,0,.35);
-  transition:.25s;
+  box-shadow:0 18px 45px rgba(0,0,0,.7);
 }
-#spinBtn:hover{
-  transform:scale(1.1);
-  box-shadow:
-    0 22px 55px rgba(0,0,0,.8),
-    0 0 25px rgba(76,175,80,.9);
-}
-#spinBtn:active{transform:scale(0.96)}
+#spinBtn:hover{transform:scale(1.1)}
 
-#exportBtn{
-  margin-top:22px;
+#exportBtn,#resetBtn{
+  margin-top:18px;
   padding:14px 46px;
   border-radius:50px;
   font-size:20px;
   font-weight:700;
-  color:#fff;
-  background:linear-gradient(135deg,#ff5252,#d50000);
   border:none;
   cursor:pointer;
-  box-shadow:0 10px 30px rgba(0,0,0,.6);
-  transition:.25s;
 }
-#exportBtn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 14px 35px rgba(0,0,0,.8);
-}
+#exportBtn{background:#d50000;color:#fff}
+#resetBtn{background:#0d47a1;color:#fff}
 
-#resetBtn{
-  margin-top:16px;
-  padding:14px 50px;
-  border-radius:50px;
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:1px;
-  color:#fff;
-  background:linear-gradient(135deg,#1e88e5,#0d47a1);
-  border:none;
-  cursor:pointer;
-  box-shadow:0 12px 32px rgba(0,0,0,.6);
-  transition:.25s;
-}
-#resetBtn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 16px 40px rgba(0,0,0,.8);
-}
-
-/* ===== BẢNG KẾT QUẢ ===== */
+/* ===== RESULT ===== */
 .result-box{
   margin:44px auto;
   width:88%;
@@ -144,38 +109,12 @@ select:hover{border-color:#ffeb3b}
   background:rgba(0,0,0,0.5);
   border-radius:24px;
   padding:24px 30px;
-  box-shadow:0 20px 55px rgba(0,0,0,.7);
-  backdrop-filter:blur(8px);
-}
-.result-title{
-  font-size:28px;
-  font-weight:800;
-  margin-bottom:18px;
-  letter-spacing:1px;
-  color:#ffeb3b;
 }
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:18px;
 }
-thead{
-  background:rgba(255,255,255,0.18);
-}
-th,td{
-  padding:14px 16px;
-  text-align:left;
-}
-th{
-  font-size:15px;
-  text-transform:uppercase;
-}
-tbody tr{
-  border-bottom:1px solid rgba(255,255,255,0.18);
-}
-tbody tr:nth-child(even){
-  background:rgba(255,255,255,0.06);
-}
+th,td{padding:14px}
 .prize{color:#ffd54f;font-weight:800}
 .code{font-family:monospace;font-size:20px}
 </style>
@@ -186,13 +125,16 @@ tbody tr:nth-child(even){
 
 <h1>🎯 QUAY SỐ MAY MẮN</h1>
 
-🎁 <b>Chọn giải:</b><br>
+🎁 <b>Chọn giải</b><br>
 <select id="prize">
   <option>Giải Nhất</option>
   <option>Giải Nhì</option>
   <option>Giải Ba</option>
   <option>Khuyến Khích</option>
 </select>
+
+<br>🎯 <b>Số người trúng / lượt</b><br>
+<input id="drawCount" type="number" value="1" min="1">
 
 <div class="slot">
   <div class="digit">0</div>
@@ -207,7 +149,7 @@ tbody tr:nth-child(even){
 <button id="resetBtn" onclick="resetAll()">🔄 RESET</button>
 
 <div class="result-box">
-  <div class="result-title">🏆 DANH SÁCH TRÚNG THƯỞNG</div>
+  <h2>🏆 DANH SÁCH TRÚNG THƯỞNG</h2>
   <table>
     <thead>
       <tr>
@@ -244,7 +186,7 @@ function spinDigits(target){
   let i=0;
   let it=setInterval(()=>{
     d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
-    if(++i>22){
+    if(++i>20){
       clearInterval(it);
       target.code.split("").forEach((n,j)=>d[j].innerText=n);
     }
@@ -252,18 +194,24 @@ function spinDigits(target){
 }
 
 function draw(){
-  if(items.length===0){alert("HẾT DANH SÁCH");return;}
-  let i=Math.floor(Math.random()*items.length);
-  let item=items.splice(i,1)[0];
-  spinDigits(item);
+  let count=parseInt(document.getElementById("drawCount").value)||1;
+  if(count>items.length){alert("Không đủ người trong danh sách");return;}
 
   let prize=document.getElementById("prize").value;
-  results.push({prize,...item});
+  let delay=0;
 
-  localStorage.setItem(KEY_ITEMS,JSON.stringify(items));
-  localStorage.setItem(KEY_RESULTS,JSON.stringify(results));
-
-  setTimeout(renderTable,2000);
+  for(let k=0;k<count;k++){
+    setTimeout(()=>{
+      let i=Math.floor(Math.random()*items.length);
+      let item=items.splice(i,1)[0];
+      spinDigits(item);
+      results.push({prize,...item});
+      localStorage.setItem(KEY_ITEMS,JSON.stringify(items));
+      localStorage.setItem(KEY_RESULTS,JSON.stringify(results));
+      setTimeout(renderTable,1200);
+    },delay);
+    delay+=1400;
+  }
 }
 
 function renderTable(){
@@ -296,10 +244,6 @@ function resetAll(){
   renderTable();
   document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
-
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey&&e.altKey&&e.key==="R") resetAll();
-});
 </script>
 </body>
 </html>
