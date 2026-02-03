@@ -99,21 +99,7 @@ h1{
 .export{background:#d50000;color:#fff}
 .reset{background:#0d47a1;color:#fff}
 
-/* ===== RESULT ===== */
-.result-box{
-  margin:44px auto;
-  width:88%;
-  max-width:980px;
-  background:rgba(0,0,0,0.5);
-  border-radius:24px;
-  padding:24px;
-}
-table{width:100%;border-collapse:collapse}
-th,td{padding:14px}
-.prize{color:#ffd54f;font-weight:800}
-.code{font-family:monospace;font-size:20px}
-
-/* ===== WINNER ===== */
+/* ===== WINNER CENTER ===== */
 #winnerBox{
   display:none;
   position:fixed;
@@ -128,15 +114,50 @@ th,td{padding:14px}
   padding:40px 60px;
   border-radius:30px;
   box-shadow:0 0 50px rgba(255,215,0,.9);
+  position:relative;
 }
 #winnerContent h2{
   font-size:36px;
   color:#ffeb3b;
+  margin-bottom:16px;
 }
 #winnerName{
   font-size:56px;
   font-weight:900;
 }
+#winnerCode{
+  margin-top:12px;
+  font-size:22px;
+  opacity:.9;
+}
+
+/* ===== SPARKLE ===== */
+.sparkle{
+  position:absolute;
+  font-size:26px;
+  animation:sparkle 1.5s ease-in-out infinite;
+}
+
+/* ===== CONFETTI ===== */
+.confetti{
+  position:absolute;
+  font-size:26px;
+  animation:floatUp 2.8s linear infinite;
+}
+
+/* ===== RESULT ===== */
+.result-box{
+  margin:44px auto;
+  width:88%;
+  max-width:980px;
+  background:rgba(0,0,0,0.5);
+  border-radius:24px;
+  padding:24px;
+}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px}
+.prize{color:#ffd54f;font-weight:800}
+.code{font-family:monospace;font-size:20px}
 
 /* ===== THAN TAI ===== */
 .thantai-box{
@@ -160,59 +181,54 @@ th,td{padding:14px}
   border-radius:20px;
   margin-bottom:6px;
   display:inline-block;
+  animation:textBounce 1.6s ease-in-out infinite;
+  box-shadow:0 6px 18px rgba(0,0,0,.4);
 }
 
-/* ===== PARALLAX HORSES ===== */
-.horse-layer{
+/* ===== HORSE RUN ===== */
+.horse-run{
   position:fixed;
-  left:-300px;
+  bottom:60px;
+  left:-220px;
+  width:120px;
+  z-index:50;
+  animation:horseRun 12s linear infinite;
   pointer-events:none;
 }
-
-.horse-back{
-  bottom:150px;
-  width:90px;
-  opacity:0.4;
-  z-index:10;
-  animation:horseBack 26s linear infinite;
-}
-
-.horse-mid{
-  bottom:100px;
-  width:120px;
-  opacity:0.65;
-  z-index:20;
-  animation:horseMid 18s linear infinite;
-}
-
-.horse-front{
-  bottom:60px;
-  width:150px;
-  opacity:0.9;
-  z-index:30;
-  animation:horseFront 12s linear infinite;
-}
-
-.horse-layer img{
-  width:100%;
-  filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));
+.horse-run img{
+  width:75%;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.6));
 }
 
 /* ===== ANIMATIONS ===== */
-@keyframes horseBack{from{left:-300px}to{left:110%}}
-@keyframes horseMid{from{left:-350px}to{left:110%}}
-@keyframes horseFront{from{left:-400px}to{left:110%}}
-@keyframes thantaiSwing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-@keyframes rotateSlow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes floatUp{
+  from{transform:translateY(0) rotate(0);opacity:1}
+  to{transform:translateY(-140px) rotate(360deg);opacity:0}
+}
+@keyframes sparkle{
+  0%,100%{opacity:.2;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.2)}
+}
+@keyframes rotateSlow{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes thantaiSwing{
+  0%,100%{transform:rotate(-5deg)}
+  50%{transform:rotate(5deg)}
+}
+@keyframes textBounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+@keyframes horseRun{
+  from{left:-220px;}
+  to{left:110%;}
+}
 </style>
 </head>
 
 <body>
-
-<!-- PARALLAX HORSES -->
-<div class="horse-layer horse-back"><img src="ngua.png"></div>
-<div class="horse-layer horse-mid"><img src="ngua.png"></div>
-<div class="horse-layer horse-front"><img src="ngua.png"></div>
 
 <div class="right-panel">
   <select id="prize">
@@ -221,7 +237,7 @@ th,td{padding:14px}
     <option>Giải Ba</option>
     <option>Giải Thưởng</option>
   </select>
-  <input id="drawCount" type="number" value="1">
+  <input id="drawCount" type="number" value="1" min="1">
   <button class="export" onclick="exportCSV()">📥 Xuất</button>
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
 </div>
@@ -229,12 +245,18 @@ th,td{padding:14px}
 <div id="winnerBox">
   <div id="winnerContent">
     <h2>🎉 CHÚC MỪNG 🎉</h2>
+    <div class="sparkle" style="top:-10px;left:-20px;">✨</div>
+    <div class="sparkle" style="top:-10px;right:-20px;animation-delay:.5s">✨</div>
+    <div class="sparkle" style="bottom:-10px;left:45%;animation-delay:1s">⭐</div>
     <div id="winnerName"></div>
     <div id="winnerCode"></div>
   </div>
 </div>
 
+<div id="confettiArea"></div>
+
 <div class="overlay">
+
 <h1><span class="title-icon">🎯</span>QUAY SỐ MAY MẮN</h1>
 
 <div class="slot">
@@ -246,16 +268,26 @@ th,td{padding:14px}
 <button id="spinBtn" onclick="draw()">QUAY</button>
 
 <div class="result-box">
-<table>
-<thead><tr><th>Giải</th><th>Mã</th><th>Tên</th></tr></thead>
-<tbody id="resultTable"></tbody>
-</table>
-</div>
+  <h2>🏆 DANH SÁCH TRÚNG THƯỞNG</h2>
+  <table>
+    <thead>
+      <tr><th>Giải</th><th>Mã số</th><th>Họ tên</th></tr>
+    </thead>
+    <tbody id="resultTable"></tbody>
+  </table>
 </div>
 
+</div>
+
+<!-- HORSE -->
+<div class="horse-run">
+  <img src="ngua.png" alt="Ngựa chạy">
+</div>
+
+<!-- THAN TAI -->
 <div class="thantai-box">
   <div class="thantai-text">✨ Người Ấy Là Ai?? ✨</div>
-  <img src="thantai.png">
+  <img src="thantai.png" alt="Thần Tài">
 </div>
 
 <script>
@@ -264,59 +296,112 @@ const defaultItems=[
  {code:"00002",name:"Trần Thị Ngân"},
  {code:"00003",name:"Lê Văn C"},
  {code:"00004",name:"Phạm Thị D"},
- {code:"00005",name:"Hoàng Văn E"}
+ {code:"00005",name:"Hoàng Văn E"},
 ];
 
-let items=[...defaultItems];
-let results=[];
+let items=JSON.parse(localStorage.getItem("ITEMS"))||[...defaultItems];
+let results=JSON.parse(localStorage.getItem("RESULTS"))||[];
 
-function spinDigits(t){
-  const d=document.querySelectorAll(".digit");
+window.onload=renderTable;
+
+function spinDigits(target){
+  let d=document.querySelectorAll(".digit");
   let i=0;
-  const it=setInterval(()=>{
+  let it=setInterval(()=>{
     d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
     if(++i>40){
       clearInterval(it);
-      t.code.split("").forEach((n,j)=>d[j].innerText=n);
+      target.code.split("").forEach((n,j)=>d[j].innerText=n);
     }
   },120);
 }
 
 function draw(){
-  if(!items.length)return;
-  const item=items.splice(Math.floor(Math.random()*items.length),1)[0];
-  spinDigits(item);
+  let count=parseInt(drawCount.value)||1;
+  if(count>items.length){alert("Không đủ người");return;}
+  let prizeValue=prize.value;
+  let delay=0;
+  for(let k=0;k<count;k++){
+    setTimeout(()=>{
+      let i=Math.floor(Math.random()*items.length);
+      let item=items.splice(i,1)[0];
+      spinDigits(item);
+      setTimeout(()=>showWinner(item,prizeValue),2000);
+    },delay);
+    delay+=4500;
+  }
+}
+
+function showWinner(item,prizeValue){
+  winnerName.innerText=item.name;
+  winnerCode.innerText="Mã số: "+item.code;
+  winnerBox.style.display="flex";
+
+  let area=document.getElementById("confettiArea");
+  area.innerHTML="";
+  for(let i=0;i<14;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.innerText=["🎊","🎉","✨","⭐"][Math.floor(Math.random()*4)];
+    c.style.left=Math.random()*100+"%";
+    c.style.bottom="10%";
+    c.style.animationDelay=Math.random()+"s";
+    area.appendChild(c);
+  }
+
   setTimeout(()=>{
-    winnerName.innerText=item.name;
-    winnerCode.innerText="Mã số: "+item.code;
-    winnerBox.style.display="flex";
-    results.push(item);
+    winnerBox.style.display="none";
+    area.innerHTML="";
+    results.push({prize:prizeValue,...item});
+    localStorage.setItem("ITEMS",JSON.stringify(items));
+    localStorage.setItem("RESULTS",JSON.stringify(results));
     renderTable();
-    setTimeout(()=>winnerBox.style.display="none",3500);
-  },2000);
+  },4000);
 }
 
 function renderTable(){
   resultTable.innerHTML="";
   results.forEach(r=>{
-    resultTable.innerHTML+=`<tr><td>${prize.value}</td><td>${r.code}</td><td>${r.name}</td></tr>`;
+    resultTable.innerHTML+=`
+      <tr>
+        <td class="prize">${r.prize}</td>
+        <td class="code">${r.code}</td>
+        <td>${r.name}</td>
+      </tr>`;
   });
 }
 
 function exportCSV(){
-  let csv="Code,Name\n";
-  results.forEach(r=>csv+=`${r.code},${r.name}\n`);
-  const a=document.createElement("a");
+  let csv="Prize,Code,Name\n";
+  results.forEach(r=>csv+=`${r.prize},${r.code},${r.name}\n`);
+  let a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv]));
-  a.download="ketqua.csv";
+  a.download="ketqua_quayso.csv";
   a.click();
 }
 
 function resetAll(){
+  if(!confirm("RESET toàn bộ dữ liệu?"))return;
+  localStorage.clear();
   items=[...defaultItems];
   results=[];
   renderTable();
+  document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
+
+/* THAN TAI + NGỰA CHẠY NHANH KHI QUAY */
+const spinBtnEl=document.getElementById("spinBtn");
+const thanTai=document.querySelector(".thantai-box");
+const horse=document.querySelector(".horse-run");
+
+spinBtnEl.addEventListener("click",()=>{
+  thanTai.style.animation="thantaiSwing .6s ease-in-out infinite";
+  horse.style.animation="horseRun 6s linear infinite";
+  setTimeout(()=>{
+    thanTai.style.animation="thantaiSwing 3s ease-in-out infinite";
+    horse.style.animation="horseRun 12s linear infinite";
+  },3000);
+});
 </script>
 </body>
 </html>
