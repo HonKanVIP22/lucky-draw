@@ -1,38 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>Lucky Draw</title>
 <style>
-body{text-align:center;font-family:Arial;margin-top:80px}
-button{font-size:30px;padding:15px 40px}
-#result{font-size:50px;color:red;margin-top:30px}
+body{
+  background:linear-gradient(135deg,#1d2671,#c33764);
+  font-family:'Segoe UI',Arial;
+  color:#fff;
+  text-align:center;
+  min-height:100vh;
+  margin:0;
+}
+.container{
+  padding-top:60px;
+}
+h1{
+  font-size:48px;
+  margin-bottom:20px;
+}
+.card{
+  background:#fff;
+  color:#333;
+  display:inline-block;
+  padding:30px 50px;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,.3);
+  min-width:420px;
+}
+button{
+  background:#c33764;
+  border:none;
+  color:#fff;
+  font-size:26px;
+  padding:14px 40px;
+  border-radius:40px;
+  cursor:pointer;
+  margin-top:20px;
+}
+button:hover{opacity:.9}
+#result{
+  font-size:42px;
+  margin-top:30px;
+  color:#c33764;
+  min-height:60px;
+}
+input[type=file]{
+  margin-top:15px;
+}
+#log{
+  margin-top:25px;
+  text-align:left;
+  max-height:200px;
+  overflow:auto;
+  font-size:14px;
+}
 </style>
 </head>
 <body>
 
-<h1>🎯 QUAY SỐ MAY MẮN</h1>
-<button onclick="draw()">QUAY</button>
-<div id="result">---</div>
+<div class="container">
+  <h1>🎯 QUAY SỐ MAY MẮN</h1>
+
+  <div class="card">
+    <div>
+      <strong>📥 Import danh sách (CSV)</strong><br>
+      <input type="file" id="fileInput" accept=".csv">
+    </div>
+
+    <button onclick="draw()">QUAY</button>
+
+    <div id="result">---</div>
+
+    <div id="log"></div>
+  </div>
+</div>
 
 <script>
-let items = [
-  {code:"001", name:"Số 1"},
-  {code:"002", name:"Số 2"},
-  {code:"003", name:"Số 3"},
-  {code:"004", name:"Số 4"},
-  {code:"005", name:"Số 5"},
-];
+let items = [];
+
+document.getElementById("fileInput").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(){
+    const lines = reader.result.split("\n");
+    items = [];
+    for(let i=1;i<lines.length;i++){
+      const [code,name] = lines[i].split(",");
+      if(code && name){
+        items.push({code:code.trim(), name:name.trim()});
+      }
+    }
+    alert("Đã import " + items.length + " người");
+  };
+  reader.readAsText(file,"UTF-8");
+});
 
 function draw(){
   if(items.length === 0){
-    document.getElementById("result").innerText = "HẾT SỐ";
+    document.getElementById("result").innerText = "HẾT DANH SÁCH";
     return;
   }
-  let i = Math.floor(Math.random()*items.length);
-  let item = items.splice(i,1)[0];
-  document.getElementById("result").innerText =
-    item.code + " - " + item.name;
+
+  let spin = 20;
+  let temp;
+  let interval = setInterval(()=>{
+    temp = items[Math.floor(Math.random()*items.length)];
+    document.getElementById("result").innerText =
+      temp.code + " - " + temp.name;
+    spin--;
+    if(spin<=0){
+      clearInterval(interval);
+      let index = items.indexOf(temp);
+      items.splice(index,1);
+      log(temp);
+    }
+  },80);
+}
+
+function log(item){
+  const div = document.getElementById("log");
+  div.innerHTML += "✔ " + item.code + " - " + item.name + "<br>";
 }
 </script>
 
