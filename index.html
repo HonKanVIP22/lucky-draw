@@ -88,4 +88,134 @@ select{
   overflow:auto;
   text-align:left;
   font-size:16px;
-  text-shadow:0 2px 4px rgba(0,0,0,.6)
+  text-shadow:0 2px 4px rgba(0,0,0,.6);
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+
+  <h1>🎯 QUAY SỐ MAY MẮN</h1>
+
+  🎁 <b>Chọn giải:</b><br>
+  <select id="prize">
+    <option>Giải Nhất</option>
+    <option>Giải Nhì</option>
+    <option>Giải Ba</option>
+    <option>Khuyến Khích</option>
+  </select>
+
+  <div class="slot">
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+  </div>
+
+  <button id="spinBtn" onclick="draw()">QUAY</button><br>
+  <button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button>
+
+  <div id="log"></div>
+</div>
+
+<script>
+/* ====== STORAGE KEY ====== */
+const KEY_ITEMS = "LUCKY_ITEMS";
+const KEY_RESULTS = "LUCKY_RESULTS";
+
+/* ====== DANH SÁCH GỐC ====== */
+const defaultItems = [
+ {code:"00001",name:"Nguyễn Văn A"},
+ {code:"00002",name:"Trần Thị B"},
+ {code:"00003",name:"Lê Văn C"},
+ {code:"00004",name:"Phạm Thị D"},
+ {code:"00005",name:"Hoàng Văn E"},
+];
+
+/* ====== LOAD TRẠNG THÁI ====== */
+let items = JSON.parse(localStorage.getItem(KEY_ITEMS)) || [...defaultItems];
+let results = JSON.parse(localStorage.getItem(KEY_RESULTS)) || [];
+
+/* ====== PHỤC HỒI LOG SAU RELOAD ====== */
+window.onload = ()=>{
+  results.forEach(r=>{
+    document.getElementById("log").innerHTML +=
+      "🏆 <b>"+r.prize+"</b>: "+r.code+" - "+r.name+"<br>";
+  });
+};
+
+/* ====== SLOT EFFECT ====== */
+function spinDigits(target){
+  let digits=document.querySelectorAll(".digit");
+  let loop=0;
+  let max=22;
+
+  let interval=setInterval(()=>{
+    digits.forEach(d=>{
+      d.innerText=Math.floor(Math.random()*10);
+      d.style.transform="scale(1.1)";
+    });
+    loop++;
+    if(loop>max){
+      clearInterval(interval);
+      target.code.split("").forEach((n,i)=>{
+        digits[i].innerText=n;
+        digits[i].style.transform="scale(1)";
+      });
+    }
+  },70);
+}
+
+/* ====== QUAY ====== */
+function draw(){
+  if(items.length===0){
+    alert("HẾT DANH SÁCH");
+    return;
+  }
+
+  let i=Math.floor(Math.random()*items.length);
+  let item=items.splice(i,1)[0];
+  spinDigits(item);
+
+  let prize=document.getElementById("prize").value;
+  results.push({prize,...item});
+
+  /* LƯU TRẠNG THÁI */
+  localStorage.setItem(KEY_ITEMS,JSON.stringify(items));
+  localStorage.setItem(KEY_RESULTS,JSON.stringify(results));
+
+  setTimeout(()=>{
+    document.getElementById("log").innerHTML+=
+      "🏆 <b>"+prize+"</b>: "+item.code+" - "+item.name+"<br>";
+  },2000);
+}
+
+/* ====== EXPORT ====== */
+function exportCSV(){
+  let csv="Prize,Code,Name\n";
+  results.forEach(r=>{
+    csv+=`${r.prize},${r.code},${r.name}\n`;
+  });
+  let blob=new Blob([csv],{type:"text/csv"});
+  let a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="ketqua_quayso.csv";
+  a.click();
+}
+
+/* ====== RESET BÍ MẬT ======
+   Ctrl + Alt + R */
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey && e.altKey && e.key==="R"){
+    if(confirm("RESET TOÀN BỘ KẾT QUẢ?")){
+      localStorage.removeItem(KEY_ITEMS);
+      localStorage.removeItem(KEY_RESULTS);
+      location.reload();
+    }
+  }
+});
+</script>
+</body>
+</html>
