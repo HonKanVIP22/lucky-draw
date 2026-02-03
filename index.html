@@ -13,161 +13,159 @@ body{
   margin:0;
   min-height:100vh;
 }
-.container{
-  padding:40px;
-  backdrop-filter: blur(2px);
-}
-h1{
-  font-size:48px;
-  margin-bottom:20px;
-  letter-spacing:2px;
-}
-.card{
-  background:rgba(255,255,255,0.95);
-  color:#333;
-  display:inline-block;
-  padding:35px 60px;
-  border-radius:24px;
-  box-shadow:0 30px 60px rgba(0,0,0,.45);
+
+/* overlay nhẹ cho chữ nổi */
+.overlay{
+  background:rgba(0,0,0,0.35);
+  min-height:100vh;
+  padding-top:50px;
 }
 
-/* ===== SLOT NUMBER ===== */
+h1{
+  font-size:56px;
+  margin-bottom:25px;
+  letter-spacing:3px;
+  text-shadow:0 4px 10px rgba(0,0,0,.6);
+}
+
+/* ===== CHỌN GIẢI ===== */
+select{
+  padding:12px 20px;
+  font-size:20px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  margin-bottom:25px;
+}
+
+/* ===== SLOT ===== */
 .slot{
   display:flex;
   justify-content:center;
-  gap:12px;
-  margin:25px 0;
+  gap:14px;
+  margin:30px 0;
 }
 .digit{
-  width:70px;
-  height:90px;
+  width:80px;
+  height:110px;
   background:#1b5e20;
   color:#fff;
-  font-size:54px;
+  font-size:64px;
   font-weight:bold;
-  border-radius:12px;
+  border-radius:14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:inset 0 -6px 0 rgba(0,0,0,.25);
-  transition:transform .15s;
+  box-shadow:
+    inset 0 -8px 0 rgba(0,0,0,.35),
+    0 10px 25px rgba(0,0,0,.5);
+  transition:transform .12s;
 }
 
-/* ===== CONTROLS ===== */
-select{
-  padding:10px 16px;
-  font-size:18px;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-
-button{
-  margin-top:20px;
-  border:none;
-  cursor:pointer;
-}
-
-/* ===== SPIN BUTTON ===== */
+/* ===== NÚT QUAY ===== */
 #spinBtn{
-  width:150px;
-  height:150px;
+  width:170px;
+  height:170px;
   border-radius:50%;
   background:#2e7d32;
   color:#fff;
-  font-size:30px;
+  font-size:32px;
   font-weight:bold;
-  box-shadow:0 12px 30px rgba(0,0,0,.4);
+  border:none;
+  cursor:pointer;
+  box-shadow:0 15px 35px rgba(0,0,0,.6);
 }
 #spinBtn:hover{
-  background:#388e3c;
-  transform:scale(1.05);
+  background:#43a047;
+  transform:scale(1.08);
 }
 
-/* ===== EXPORT ===== */
+/* ===== XUẤT ===== */
 #exportBtn{
-  margin-top:25px;
+  margin-top:30px;
   background:#e53935;
   color:#fff;
-  padding:14px 36px;
-  border-radius:30px;
+  padding:14px 40px;
+  border-radius:40px;
   font-size:20px;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,0,0,.5);
 }
 
+/* ===== LOG ===== */
 #log{
-  margin-top:25px;
+  margin:30px auto;
+  max-width:600px;
   max-height:200px;
   overflow:auto;
   text-align:left;
-  font-size:15px;
+  font-size:16px;
+  text-shadow:0 2px 4px rgba(0,0,0,.6);
 }
 </style>
 </head>
 
 <body>
-<div class="container">
+<div class="overlay">
+
   <h1>🎯 QUAY SỐ MAY MẮN</h1>
 
-  <div class="card">
+  🎁 <b>Chọn giải:</b><br>
+  <select id="prize">
+    <option>Giải Nhất</option>
+    <option>Giải Nhì</option>
+    <option>Giải Ba</option>
+    <option>Khuyến Khích</option>
+  </select>
 
-    <div>
-      🎁 <b>Chọn giải:</b><br>
-      <select id="prize">
-        <option>Giải Nhất</option>
-        <option>Giải Nhì</option>
-        <option>Giải Ba</option>
-        <option>Khuyến Khích</option>
-      </select>
-    </div>
-
-    <!-- SLOT -->
-    <div class="slot" id="slot">
-      <div class="digit">0</div>
-      <div class="digit">0</div>
-      <div class="digit">0</div>
-      <div class="digit">0</div>
-      <div class="digit">0</div>
-    </div>
-
-    <button id="spinBtn" onclick="draw()">QUAY</button><br>
-
-    <button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button>
-
-    <div id="log"></div>
+  <!-- SLOT -->
+  <div class="slot">
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+    <div class="digit">0</div>
+    <div class="digit">0</div>
   </div>
+
+  <button id="spinBtn" onclick="draw()">QUAY</button><br>
+
+  <button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button>
+
+  <div id="log"></div>
+
 </div>
 
 <script>
-// ===== DANH SÁCH QUAY =====
 let items=[
  {code:"00001",name:"Nguyễn Văn A"},
  {code:"00002",name:"Trần Thị B"},
  {code:"00003",name:"Lê Văn C"},
  {code:"00004",name:"Phạm Thị D"},
  {code:"00005",name:"Hoàng Văn E"},
- // thêm tới 70 người OK
 ];
 let results=[];
 
 // ===== HIỆU ỨNG SLOT =====
 function spinDigits(target){
   let digits=document.querySelectorAll(".digit");
-  let loops=20;
-  let count=0;
+  let loop=0;
+  let max=22;
 
   let interval=setInterval(()=>{
     digits.forEach(d=>{
       d.innerText=Math.floor(Math.random()*10);
       d.style.transform="scale(1.1)";
     });
-    count++;
-    if(count>loops){
+    loop++;
+    if(loop>max){
       clearInterval(interval);
-      target.code.split("").forEach((num,i)=>{
-        digits[i].innerText=num;
+      target.code.split("").forEach((n,i)=>{
+        digits[i].innerText=n;
         digits[i].style.transform="scale(1)";
       });
     }
-  },80);
+  },70);
 }
 
 // ===== QUAY =====
