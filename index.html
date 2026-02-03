@@ -22,7 +22,7 @@ h1{font-size:46px;margin:10px 0}
   min-width:460px;
   box-shadow:0 25px 50px rgba(0,0,0,.35)
 }
-select,button,input{
+select,button{
   font-size:18px;
   padding:8px 14px;
   margin-top:10px
@@ -38,10 +38,12 @@ button{
 }
 button:hover{opacity:.9}
 #result{
-  font-size:44px;
+  font-size:60px;
+  font-weight:bold;
   color:#e63946;
   margin-top:25px;
-  min-height:60px
+  min-height:70px;
+  letter-spacing:2px;
 }
 #log{
   margin-top:20px;
@@ -59,9 +61,6 @@ button:hover{opacity:.9}
   <h1>🎯 QUAY SỐ MAY MẮN</h1>
 
   <div class="card">
-    <div>
-      <input type="file" id="fileInput" accept=".csv">
-    </div>
 
     <div>
       <strong>🎁 Chọn giải:</strong><br>
@@ -74,6 +73,7 @@ button:hover{opacity:.9}
     </div>
 
     <button onclick="draw()">QUAY</button>
+
     <div id="result">---</div>
 
     <button onclick="exportCSV()">📥 Xuất kết quả</button>
@@ -83,61 +83,79 @@ button:hover{opacity:.9}
 </div>
 
 <script>
-let items = [];
+// ================= DANH SÁCH QUAY (IMPORT SẴN) =================
+let items = [
+  { code:"001", name:"Nguyễn Văn A" },
+  { code:"002", name:"Trần Thị B" },
+  { code:"003", name:"Lê Văn C" },
+  { code:"004", name:"Phạm Thị D" },
+  { code:"005", name:"Hoàng Văn E" },
+  { code:"006", name:"Võ Thị F" },
+  { code:"007", name:"Đặng Văn G" },
+  { code:"008", name:"Bùi Thị H" },
+  { code:"009", name:"Ngô Văn I" },
+  { code:"010", name:"Dương Thị K" }
+  // 👉 thêm tới 70 người vẫn OK
+];
+
 let results = [];
 
-document.getElementById("fileInput").addEventListener("change", e=>{
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    const lines = reader.result.split("\n");
-    items=[];
-    for(let i=1;i<lines.length;i++){
-      let [code,name]=lines[i].split(",");
-      if(code && name){
-        items.push({code:code.trim(),name:name.trim()});
-      }
-    }
-    alert("Đã import "+items.length+" người");
-  };
-  reader.readAsText(e.target.files[0],"UTF-8");
-});
-
+// ================= QUAY SỐ HIỆU ỨNG =================
 function draw(){
-  if(items.length===0){
-    document.getElementById("result").innerText="HẾT DANH SÁCH";
+  if(items.length === 0){
+    document.getElementById("result").innerText = "HẾT DANH SÁCH";
     return;
   }
-  let spin=25;
+
+  let duration = 3000; // thời gian quay (ms)
+  let intervalTime = 60;
+  let start = Date.now();
   let temp;
-  let interval=setInterval(()=>{
-    temp=items[Math.floor(Math.random()*items.length)];
-    document.getElementById("result").innerText=temp.code+" - "+temp.name;
-    spin--;
-    if(spin<=0){
+
+  let interval = setInterval(()=>{
+    temp = items[Math.floor(Math.random()*items.length)];
+    document.getElementById("result").innerText =
+      temp.code + " - " + temp.name;
+
+    // hiệu ứng phóng nhẹ
+    document.getElementById("result").style.transform =
+      "scale(" + (1 + Math.random()*0.05) + ")";
+
+    if(Date.now() - start > duration){
       clearInterval(interval);
-      let index=items.indexOf(temp);
+
+      let index = items.indexOf(temp);
       items.splice(index,1);
-      let prize=document.getElementById("prize").value;
+
+      let prize = document.getElementById("prize").value;
       results.push({prize,...temp});
       log(prize,temp);
+
+      // hiệu ứng trúng giải
+      document.getElementById("result").style.transform = "scale(1.2)";
+      setTimeout(()=>{
+        document.getElementById("result").style.transform = "scale(1)";
+      },300);
     }
-  },80);
+  }, intervalTime);
 }
 
+// ================= LOG KẾT QUẢ =================
 function log(prize,item){
-  document.getElementById("log").innerHTML+=
+  document.getElementById("log").innerHTML +=
     "🏆 <b>"+prize+"</b>: "+item.code+" - "+item.name+"<br>";
 }
 
+// ================= XUẤT EXCEL =================
 function exportCSV(){
   let csv="Prize,Code,Name\n";
   results.forEach(r=>{
-    csv+=`${r.prize},${r.code},${r.name}\n`;
+    csv += `${r.prize},${r.code},${r.name}\n`;
   });
-  let blob=new Blob([csv],{type:"text/csv"});
-  let a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="ketqua_quayso.csv";
+  let blob = new Blob([csv],{type:"text/csv"});
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "ketqua_quayso.csv";
   a.click();
 }
 </script>
