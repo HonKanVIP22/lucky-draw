@@ -289,7 +289,7 @@ function spinDigits(target){
       clearInterval(it);
       target.code.split("").forEach((n,j)=>d[j].innerText=n);
     }
-  },70);
+  },120);
 }
 
 function draw(){
@@ -302,7 +302,7 @@ function draw(){
       let i=Math.floor(Math.random()*items.length);
       let item=items.splice(i,1)[0];
       spinDigits(item);
-      setTimeout(()=>showWinner(item,prizeValue),1200);
+      setTimeout(()=>showWinner(item,prizeValue),2000);
     },delay);
     delay+=4500;
   }
@@ -332,7 +332,7 @@ function showWinner(item,prizeValue){
     localStorage.setItem("ITEMS",JSON.stringify(items));
     localStorage.setItem("RESULTS",JSON.stringify(results));
     renderTable();
-  },3000);
+  },4000);
 }
 
 function renderTable(){
