@@ -35,7 +35,7 @@ h1{
 }
 
 /* ===== INPUT / SELECT ===== */
-select,input{
+select{
   padding:14px 28px;
   font-size:20px;
   font-weight:600;
@@ -49,7 +49,7 @@ select,input{
   margin-bottom:22px;
   text-align:center;
 }
-select:hover,input:hover{border-color:#ffeb3b}
+select:hover{border-color:#ffeb3b}
 
 /* ===== SLOT ===== */
 .slot{
@@ -74,7 +74,7 @@ select:hover,input:hover{border-color:#ffeb3b}
     0 12px 30px rgba(0,0,0,.6);
 }
 
-/* ===== BUTTON ===== */
+/* ===== SPIN BUTTON ===== */
 #spinBtn{
   width:190px;
   height:190px;
@@ -89,17 +89,43 @@ select:hover,input:hover{border-color:#ffeb3b}
 }
 #spinBtn:hover{transform:scale(1.1)}
 
-#exportBtn,#resetBtn{
-  margin-top:18px;
-  padding:14px 46px;
-  border-radius:50px;
-  font-size:20px;
+/* ===== RIGHT PANEL ===== */
+.right-panel{
+  position:fixed;
+  top:20px;
+  right:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:999;
+}
+
+/* input nhỏ */
+.right-panel input{
+  width:120px;
+  padding:8px 12px;
+  font-size:15px;
+  border-radius:12px;
+  border:2px solid rgba(255,255,255,.35);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  text-align:center;
+}
+
+/* nút nhỏ */
+.right-panel button{
+  padding:8px 18px;
+  font-size:14px;
   font-weight:700;
+  border-radius:30px;
   border:none;
   cursor:pointer;
+  box-shadow:0 6px 16px rgba(0,0,0,.5);
 }
-#exportBtn{background:#d50000;color:#fff}
-#resetBtn{background:#0d47a1;color:#fff}
+.right-panel button:hover{transform:scale(1.06)}
+
+.right-panel .export{background:#d50000;color:#fff}
+.right-panel .reset{background:#0d47a1;color:#fff}
 
 /* ===== RESULT ===== */
 .result-box{
@@ -121,6 +147,14 @@ th,td{padding:14px}
 </head>
 
 <body>
+
+<!-- PANEL GÓC PHẢI -->
+<div class="right-panel">
+  <input id="drawCount" type="number" value="1" min="1" title="Số người trúng / lượt">
+  <button class="export" onclick="exportCSV()">📥 Xuất</button>
+  <button class="reset" onclick="resetAll()">🔄 Reset</button>
+</div>
+
 <div class="overlay">
 
 <h1>QUAY SỐ MAY MẮN</h1>
@@ -133,9 +167,6 @@ th,td{padding:14px}
   <option>Khuyến Khích</option>
 </select>
 
-<br>🎯 <b>Số người trúng / lượt</b><br>
-<input id="drawCount" type="number" value="1" min="1">
-
 <div class="slot">
   <div class="digit">0</div>
   <div class="digit">0</div>
@@ -144,10 +175,7 @@ th,td{padding:14px}
   <div class="digit">0</div>
 </div>
 
-<button id="spinBtn" onclick="draw()">QUAY</button><br>
-<button id="exportBtn" onclick="exportCSV()">📥 Xuất kết quả</button><br>
-<button id="resetBtn" onclick="resetAll()">🔄 RESET</button>
-
+<button id="spinBtn" onclick="draw()">QUAY</button>
 
 <div class="result-box">
   <h2>🏆 DANH SÁCH TRÚNG THƯỞNG</h2>
