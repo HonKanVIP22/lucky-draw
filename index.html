@@ -285,7 +285,7 @@ function spinDigits(target){
   let i=0;
   let it=setInterval(()=>{
     d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
-    if(++i>20){
+    if(++i>40){
       clearInterval(it);
       target.code.split("").forEach((n,j)=>d[j].innerText=n);
     }
