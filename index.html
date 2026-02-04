@@ -185,6 +185,30 @@ th,td{padding:14px}
   box-shadow:0 6px 18px rgba(0,0,0,.4);
 }
 
+  /* ===== HORSE STAND (NGỰA ĐỨNG) ===== */
+.horse-stand{
+  position:fixed;
+  left:20px;
+  bottom:40px;       /* BẰNG bottom của thần tài */
+  width:240px;       /* BẰNG width của thần tài */
+  z-index:998;
+  text-align:center;
+}
+.horse-stand img{
+  width:100%;
+  filter:drop-shadow(0 10px 25px rgba(0,0,0,.6));
+}
+.horse-text{
+  background:linear-gradient(90deg,#ffeb3b,#ffc107);
+  color:#5d4037;
+  font-weight:900;
+  padding:8px 14px;
+  border-radius:20px;
+  margin-bottom:6px;
+  display:inline-block;
+  box-shadow:0 6px 18px rgba(0,0,0,.4);
+}
+
 /* ===== HORSE RUN ===== */
 .horse-run{
   position:fixed;
@@ -283,7 +307,11 @@ th,td{padding:14px}
 <div class="horse-run">
   <img src="ngua.png" alt="Ngựa chạy">
 </div>
-
+<!-- HORSE STAND -->
+<div class="horse-stand">
+  <div class="horse-text">🐎 MÃ ĐÁO THÀNH CÔNG 🐎</div>
+  <img src="ngua2.png" alt="Ngựa đứng">
+</div>
 <!-- THAN TAI -->
 <div class="thantai-box">
   <div class="thantai-text">✨ Người Ấy Là Ai?? ✨</div>
