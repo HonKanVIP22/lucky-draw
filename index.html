@@ -273,7 +273,7 @@ th,td{padding:14px}
     <option>Giải Thưởng</option>
   </select>
   <input id="drawCount" type="number" value="1" min="1">
-  <button class="export" onclick="exportCSV()">📥 Xuất</button>
+  <button class="export" onclick="exportExcel()">📥 Xuất Excel</button>
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
 </div>
 
@@ -439,6 +439,25 @@ function exportCSV(){
   a.download="ketqua_quayso.csv";
   a.click();
 }
+function exportExcel(){
+  if(results.length===0){
+    alert("Chưa có dữ liệu để xuất");
+    return;
+  }
+
+  let data = results.map(r => ({
+    "Giải": r.prize,
+    "Đợt": r.round,
+    "Mã số": r.code,
+    "Họ tên": r.name
+  }));
+
+  let ws = XLSX.utils.json_to_sheet(data);
+  let wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Kết quả");
+
+  XLSX.writeFile(wb, "ketqua_quayso.xlsx");
+}
 
 function resetAll(){
   if(!confirm("RESET toàn bộ dữ liệu?")) return;
@@ -469,6 +488,6 @@ spinBtnEl.addEventListener("click",()=>{
     horse.style.animation="horseRun 12s linear infinite";
   },3000);
 });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </body>
 </html>
