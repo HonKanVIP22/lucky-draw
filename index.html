@@ -5,7 +5,6 @@
 <title>Lucky Draw Pro</title>
 
 <style>
-/* ====== GIỮ NGUYÊN CSS CỦA BẠN ====== */
 body{
   background:url("nen.jpg") center/cover no-repeat fixed;
   font-family:'Segoe UI',Arial;
@@ -14,64 +13,217 @@ body{
   margin:0;
   min-height:100vh;
 }
-.overlay{background:rgba(0,0,0,.35);min-height:100vh;padding-top:50px}
-h1{font-size:64px;font-weight:900;letter-spacing:4px;margin-bottom:28px;
-background:linear-gradient(90deg,#fff176,#ffeb3b,#ffc107);
--webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.title-icon{animation:rotateSlow 8s linear infinite;margin-right:14px;display:inline-block}
+.overlay{
+  background:rgba(0,0,0,0.35);
+  min-height:100vh;
+  padding-top:50px;
+}
 
-.slot{display:flex;justify-content:center;gap:16px;margin:30px 0}
-.digit{width:84px;height:118px;background:linear-gradient(180deg,#ffeb3b,#ffc107);
-color:#5d4037;font-size:66px;font-weight:900;border-radius:16px;
-display:flex;align-items:center;justify-content:center}
+/* ===== TITLE ===== */
+h1{
+  font-size:64px;
+  font-weight:900;
+  letter-spacing:4px;
+  margin-bottom:28px;
+  background:linear-gradient(90deg,#fff176,#ffeb3b,#ffc107);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.title-icon{
+  display:inline-block;
+  animation:rotateSlow 8s linear infinite;
+  margin-right:14px;
+}
 
-#spinBtn{width:190px;height:190px;border-radius:50%;
-background:radial-gradient(circle,#ffeb3b,#ffc107);
-font-size:34px;font-weight:900;border:none;cursor:pointer}
+/* ===== SLOT ===== */
+.slot{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin:30px 0;
+}
+.digit{
+  width:84px;
+  height:118px;
+  background:linear-gradient(180deg,#ffeb3b,#ffc107);
+  color:#5d4037;
+  font-size:66px;
+  font-weight:900;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-.right-panel{position:fixed;top:20px;right:20px;background:rgba(0,0,0,.4);
-padding:12px;border-radius:16px;display:flex;flex-direction:column;gap:10px}
-.right-panel select,.right-panel input{
-width:150px;padding:8px;border-radius:12px;background:rgba(0,0,0,.5);
-color:#fff;border:none;text-align:center}
+/* ===== SPIN BUTTON ===== */
+#spinBtn{
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffeb3b,#ffc107);
+  color:#5d4037;
+  font-size:34px;
+  font-weight:900;
+  border:none;
+  cursor:pointer;
+}
+
+/* ===== RIGHT PANEL ===== */
+.right-panel{
+  position:fixed;
+  top:20px;
+  right:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  background:rgba(0,0,0,.4);
+  padding:12px;
+  border-radius:16px;
+}
+.right-panel select,
+.right-panel input{
+  width:150px;
+  padding:8px;
+  border-radius:12px;
+  background:rgba(0,0,0,.5);
+  color:#fff;
+  border:none;
+  text-align:center;
+}
+.right-panel button{
+  padding:8px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+}
 .export{background:#d50000;color:#fff}
 .reset{background:#0d47a1;color:#fff}
 
-/* ===== WINNER ===== */
-#winnerBox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);
-z-index:9999;align-items:center;justify-content:center}
-#winnerContent{background:rgba(0,0,0,.85);padding:40px 60px;border-radius:30px;
-box-shadow:0 0 50px rgba(255,215,0,.9);position:relative}
-#winnerContent h2{color:#ffeb3b;font-size:36px}
+/* ===== WINNER CENTER ===== */
+#winnerBox{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+}
+#winnerContent{
+  background:rgba(0,0,0,.85);
+  padding:40px 60px;
+  border-radius:30px;
+  box-shadow:0 0 50px rgba(255,215,0,.9);
+  position:relative;
+}
+#winnerContent h2{
+  font-size:36px;
+  color:#ffeb3b;
+  margin-bottom:16px;
+}
 
 /* ❌ NÚT ĐÓNG */
 #closeWinner{
-position:absolute;top:14px;right:18px;
-width:40px;height:40px;border-radius:50%;
-border:none;background:#d50000;color:#fff;
-font-size:22px;cursor:pointer}
+  position:absolute;
+  top:14px;
+  right:18px;
+  background:#d50000;
+  color:#fff;
+  border:none;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  font-size:22px;
+  cursor:pointer;
+}
 
-/* DANH SÁCH NHIỀU NGƯỜI */
-#winnerList{margin-top:20px}
-.winner-item{font-size:38px;font-weight:900;margin:14px 0}
-.winner-item span{display:block;font-size:20px;opacity:.85}
+/* DANH SÁCH NGƯỜI TRÚNG */
+#winnerList{
+  margin-top:20px;
+}
+.winner-item{
+  font-size:48px;
+  font-weight:900;
+  margin:16px 0;
+}
+.winner-item span{
+  display:block;
+  font-size:20px;
+  opacity:.9;
+}
 
-.sparkle{position:absolute;font-size:26px;animation:sparkle 1.5s infinite}
-.confetti{position:absolute;font-size:26px;animation:floatUp 2.8s linear infinite}
+/* ===== SPARKLE ===== */
+.sparkle{
+  position:absolute;
+  font-size:26px;
+  animation:sparkle 1.5s ease-in-out infinite;
+}
 
-/* ===== THAN TAI + NGỰA GIỮ NGUYÊN ===== */
-.thantai-box{position:fixed;right:20px;bottom:40px;width:240px;z-index:998;
-text-align:center;animation:thantaiSwing 3s ease-in-out infinite}
-.thantai-text{background:linear-gradient(90deg,#ffeb3b,#ffc107);
-color:#5d4037;font-weight:900;padding:8px 14px;border-radius:20px}
+/* ===== CONFETTI ===== */
+.confetti{
+  position:absolute;
+  font-size:26px;
+  animation:floatUp 2.8s linear infinite;
+}
 
-.horse-run{position:fixed;top:20px;left:-220px;width:300px;
-animation:horseRun 12s linear infinite;pointer-events:none}
+/* ===== RESULT ===== */
+.result-box{
+  margin:44px auto;
+  width:88%;
+  max-width:980px;
+  background:rgba(0,0,0,0.5);
+  border-radius:24px;
+  padding:24px;
+}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px}
+.prize{color:#ffd54f;font-weight:800}
+.code{font-family:monospace;font-size:20px}
 
-@keyframes floatUp{to{transform:translateY(-140px) rotate(360deg);opacity:0}}
+/* ===== THAN TAI + HORSE (GIỮ NGUYÊN) ===== */
+.thantai-box{
+  position:fixed;
+  right:20px;
+  bottom:40px;
+  width:240px;
+  z-index:998;
+  text-align:center;
+  animation:thantaiSwing 3s ease-in-out infinite;
+}
+.thantai-box img{
+  width:100%;
+  filter:drop-shadow(0 10px 25px rgba(0,0,0,.6));
+}
+.thantai-text{
+  background:linear-gradient(90deg,#ffeb3b,#ffc107);
+  color:#5d4037;
+  font-weight:900;
+  padding:8px 14px;
+  border-radius:20px;
+  margin-bottom:6px;
+  display:inline-block;
+  animation:textBounce 1.6s ease-in-out infinite;
+}
+
+.horse-stand{
+  position:fixed;
+  left:20px;
+  bottom:40px;
+  width:240px;
+}
+.horse-run{
+  position:fixed;
+  top:20px;
+  left:-220px;
+  width:300px;
+  animation:horseRun 12s linear infinite;
+}
+
+@keyframes floatUp{to{transform:translateY(-140px);opacity:0}}
 @keyframes sparkle{50%{opacity:1;transform:scale(1.2)}}
 @keyframes rotateSlow{to{transform:rotate(360deg)}}
 @keyframes thantaiSwing{50%{transform:rotate(5deg)}}
+@keyframes textBounce{50%{transform:translateY(-6px)}}
 @keyframes horseRun{to{left:110%}}
 </style>
 </head>
@@ -90,11 +242,15 @@ animation:horseRun 12s linear infinite;pointer-events:none}
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
 </div>
 
-<!-- WINNER -->
+<!-- ===== CHÚC MỪNG (ĐÃ NÂNG CẤP) ===== -->
 <div id="winnerBox">
   <div id="winnerContent">
     <button id="closeWinner" onclick="closeWinner()">✖</button>
     <h2>🎉 CHÚC MỪNG 🎉</h2>
+
+    <div class="sparkle" style="top:-10px;left:-20px;">✨</div>
+    <div class="sparkle" style="top:-10px;right:-20px;">✨</div>
+
     <div id="winnerList"></div>
   </div>
 </div>
@@ -111,13 +267,13 @@ animation:horseRun 12s linear infinite;pointer-events:none}
 </div>
 
 <button id="spinBtn" onclick="draw()">QUAY</button>
-</div>
 
-<!-- NGỰA + THẦN TÀI -->
-<div class="horse-run"><img src="ngua.png"></div>
-<div class="thantai-box">
-  <div class="thantai-text">✨ Người Ấy Là Ai?? ✨</div>
-  <img src="thantai.png">
+<div class="result-box">
+  <h2>🏆 DANH SÁCH TRÚNG THƯỞNG</h2>
+  <table>
+    <tbody id="resultTable"></tbody>
+  </table>
+</div>
 </div>
 
 <script>
@@ -127,62 +283,74 @@ const defaultItems=[
  {code:"00003",name:"Lê Văn C"},
  {code:"00004",name:"Phạm Thị D"},
  {code:"00005",name:"Hoàng Văn E"},
- {code:"00006",name:"Hoàng Văn Kong"},
+ {code:"00006",name:"Hoàng Văn kon"},
 ];
 
 let items=[...defaultItems];
 let results=[];
 
 function spinDigits(target){
- let d=document.querySelectorAll(".digit");
- let i=0;
- let t=setInterval(()=>{
-  d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
-  if(++i>30){clearInterval(t);
-   target.code.split("").forEach((n,j)=>d[j].innerText=n);}
- },100);
+  let d=document.querySelectorAll(".digit");
+  let i=0;
+  let it=setInterval(()=>{
+    d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
+    if(++i>40){
+      clearInterval(it);
+      target.code.split("").forEach((n,j)=>d[j].innerText=n);
+    }
+  },120);
 }
 
 function draw(){
- let count=+drawCount.value||1;
- if(count>items.length){alert("Không đủ người");return;}
+  let count=parseInt(drawCount.value)||1;
+  if(count>items.length){alert("Không đủ người");return;}
 
- let winners=[];
- for(let i=0;i<count;i++){
-  let idx=Math.floor(Math.random()*items.length);
-  winners.push(items.splice(idx,1)[0]);
- }
+  let prizeValue=prize.value;
+  let winners=[];
 
- spinDigits(winners[0]);
- setTimeout(()=>showMultiWinners(winners),2000);
+  for(let i=0;i<count;i++){
+    let idx=Math.floor(Math.random()*items.length);
+    winners.push(items.splice(idx,1)[0]);
+  }
+
+  spinDigits(winners[0]);
+
+  setTimeout(()=>showMultiWinners(winners,prizeValue),2000);
 }
 
-function showMultiWinners(list){
- winnerList.innerHTML="";
- list.forEach(w=>{
-  winnerList.innerHTML+=`
-   <div class="winner-item">${w.name}
-   <span>Mã số: ${w.code}</span></div>`;
- });
+function showMultiWinners(list,prizeValue){
+  winnerList.innerHTML="";
+  list.forEach(item=>{
+    winnerList.innerHTML+=`
+      <div class="winner-item">
+        ${item.name}
+        <span>Mã số: ${item.code}</span>
+      </div>`;
+    results.push({prize:prizeValue,...item});
+  });
 
- winnerBox.style.display="flex";
-
- let area=document.getElementById("confettiArea");
- area.innerHTML="";
- for(let i=0;i<20;i++){
-  let c=document.createElement("div");
-  c.className="confetti";
-  c.innerText=["🎉","✨","⭐"][Math.floor(Math.random()*3)];
-  c.style.left=Math.random()*100+"%";
-  c.style.bottom="10%";
-  area.appendChild(c);
- }
+  winnerBox.style.display="flex";
+  renderTable();
 }
 
 function closeWinner(){
- winnerBox.style.display="none";
- confettiArea.innerHTML="";
+  winnerBox.style.display="none";
 }
+
+function renderTable(){
+  resultTable.innerHTML="";
+  results.forEach(r=>{
+    resultTable.innerHTML+=`
+      <tr>
+        <td>${r.prize}</td>
+        <td>${r.code}</td>
+        <td>${r.name}</td>
+      </tr>`;
+  });
+}
+
+function exportCSV(){}
+function resetAll(){}
 </script>
 </body>
 </html>
