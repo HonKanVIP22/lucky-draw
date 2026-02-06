@@ -381,15 +381,20 @@ function showWinner(item,prizeValue,roundNo){
   winnerName.innerText=item.name;
   winnerCode.innerText="Mã số: "+item.code;
   winnerBox.style.display="flex";
+
   setTimeout(()=>{
     winnerBox.style.display="none";
-    area.innerHTML="";
-    results.push({prize:prizeValue,...item});
+    results.push({
+      prize: prizeValue,
+      round: roundNo,   // 👈 thêm round
+      ...item
+    });
     localStorage.setItem("ITEMS",JSON.stringify(items));
     localStorage.setItem("RESULTS",JSON.stringify(results));
     renderTable();
   },4000);
 }
+
 
 function renderTable(){
   resultTable.innerHTML="";
