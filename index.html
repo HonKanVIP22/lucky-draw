@@ -441,13 +441,20 @@ function exportCSV(){
 }
 
 function resetAll(){
-  if(!confirm("RESET toàn bộ dữ liệu?"))return;
+  if(!confirm("RESET toàn bộ dữ liệu?")) return;
+
   localStorage.clear();
-  items=[...defaultItems];
-  results=[];
+
+  items = [...defaultItems];
+  results = [];
+  round = 1; // ⭐ RESET SỐ ĐỢT
+
+  localStorage.setItem("ROUND", round);
+
   renderTable();
   document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
+
 
 /* THAN TAI + NGỰA CHẠY NHANH KHI QUAY */
 const spinBtnEl=document.getElementById("spinBtn");
