@@ -223,7 +223,18 @@ th,td{padding:14px}
   width:75%;
   filter:drop-shadow(0 10px 20px rgba(0,0,0,.6));
 }
-
+/* ==== GOM KẾT QUẢ THEO ĐỢT ==== */
+.round-header{
+  cursor:pointer;
+  background:rgba(255,215,0,.15);
+  font-weight:900;
+}
+.round-header:hover{
+  background:rgba(255,215,0,.3);
+}
+.round-detail{
+  display:none;
+}
 /* ===== ANIMATIONS ===== */
 @keyframes floatUp{
   from{transform:translateY(0) rotate(0);opacity:1}
@@ -330,7 +341,7 @@ const defaultItems=[
 
 let items=JSON.parse(localStorage.getItem("ITEMS"))||[...defaultItems];
 let results=JSON.parse(localStorage.getItem("RESULTS"))||[];
-
+let round=parseInt(localStorage.getItem("ROUND"))||1;
 window.onload=renderTable;
 
 function spinDigits(target){
@@ -350,33 +361,35 @@ function draw(){
   if(count>items.length){alert("Không đủ người");return;}
   let prizeValue=prize.value;
   let delay=0;
+  let currentRound=round;
+
   for(let k=0;k<count;k++){
     setTimeout(()=>{
       let i=Math.floor(Math.random()*items.length);
       let item=items.splice(i,1)[0];
       spinDigits(item);
-      setTimeout(()=>showWinner(item,prizeValue),2000);
+      setTimeout(()=>showWinner(item,prizeValue,currentRound),2000);
     },delay);
     delay+=4500;
   }
+
+  round++;
+  localStorage.setItem("ROUND",round);
 }
 
-function showWinner(item,prizeValue){
+function showWinner(item,prizeValue,roundNo){
   winnerName.innerText=item.name;
   winnerCode.innerText="Mã số: "+item.code;
   winnerBox.style.display="flex";
 
-  let area=document.getElementById("confettiArea");
-  area.innerHTML="";
-  for(let i=0;i<14;i++){
-    let c=document.createElement("div");
-    c.className="confetti";
-    c.innerText=["🎊","🎉","✨","⭐"][Math.floor(Math.random()*4)];
-    c.style.left=Math.random()*100+"%";
-    c.style.bottom="10%";
-    c.style.animationDelay=Math.random()+"s";
-    area.appendChild(c);
-  }
+  setTimeout(()=>{
+    winnerBox.style.display="none";
+    results.push({...item,prize:prizeValue,round:roundNo});
+    localStorage.setItem("ITEMS",JSON.stringify(items));
+    localStorage.setItem("RESULTS",JSON.stringify(results));
+    renderTable();
+  },4000);
+}
 
   setTimeout(()=>{
     winnerBox.style.display="none";
@@ -390,16 +403,39 @@ function showWinner(item,prizeValue){
 
 function renderTable(){
   resultTable.innerHTML="";
+  let grouped={};
+
   results.forEach(r=>{
+    let key=`${r.prize} - Đợt ${r.round}`;
+    if(!grouped[key]) grouped[key]=[];
+    grouped[key].push(r);
+  });
+
+  Object.keys(grouped).forEach(key=>{
+    let cls="r"+Math.random().toString(36).substr(2,6);
+
     resultTable.innerHTML+=`
-      <tr>
-        <td class="prize">${r.prize}</td>
-        <td class="code">${r.code}</td>
-        <td>${r.name}</td>
-      </tr>`;
+      <tr class="round-header" onclick="toggle('${cls}')">
+        <td colspan="3">▶ ${key} (${grouped[key].length} người)</td>
+      </tr>
+    `;
+
+    grouped[key].forEach(r=>{
+      resultTable.innerHTML+=`
+        <tr class="round-detail ${cls}">
+          <td>${r.prize}</td>
+          <td class="code">${r.code}</td>
+          <td>${r.name}</td>
+        </tr>
+      `;
+    });
   });
 }
-
+function toggle(cls){
+  document.querySelectorAll("."+cls).forEach(r=>{
+    r.style.display = r.style.display==="table-row" ? "none":"table-row";
+  });
+}
 function exportCSV(){
   let csv="Prize,Code,Name\n";
   results.forEach(r=>csv+=`${r.prize},${r.code},${r.name}\n`);
