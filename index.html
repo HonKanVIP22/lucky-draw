@@ -275,6 +275,8 @@ th,td{padding:14px}
   <input id="drawCount" type="number" value="1" min="1">
   <button class="export" onclick="exportExcel()">📥 Xuất Excel</button>
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
+  <input type="file" id="importExcel" accept=".xlsx">
+
 </div>
 
 <div id="winnerBox">
@@ -330,7 +332,7 @@ th,td{padding:14px}
 </div>
 
 <script>
-const defaultItems=[
+let defaultItems=[
  {code:"99991",name:"Nguyễn Văn Kan"},
  {code:"00002",name:"Trần Thị Ngân"},
  {code:"00003",name:"Lê Văn C"},
@@ -338,6 +340,7 @@ const defaultItems=[
  {code:"00005",name:"Hoàng Văn E"},
  {code:"00006",name:"Hoàng Văn kon"},
 ];
+
 
 let items=JSON.parse(localStorage.getItem("ITEMS"))||[...defaultItems];
 let results=JSON.parse(localStorage.getItem("RESULTS"))||[];
@@ -349,7 +352,7 @@ function spinDigits(target){
   let i=0;
   let it=setInterval(()=>{
     d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
-    if(++i>40){
+    if(++i>60){
       clearInterval(it);
       target.code.split("").forEach((n,j)=>d[j].innerText=n);
     }
@@ -394,7 +397,6 @@ function showWinner(item,prizeValue,roundNo){
     renderTable();
   },4000);
 }
-
 
 function renderTable(){
   resultTable.innerHTML="";
@@ -466,13 +468,16 @@ function resetAll(){
 
   items = [...defaultItems];
   results = [];
-  round = 1; // ⭐ RESET SỐ ĐỢT
+  round = 1;
 
-  localStorage.setItem("ROUND", round);
+  localStorage.setItem("ITEMS", JSON.stringify(items));
+  localStorage.setItem("RESULTS", JSON.stringify(results));
+  localStorage.setItem("ROUND", 1);
 
   renderTable();
   document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
+
 
 
 /* THAN TAI + NGỰA CHẠY NHANH KHI QUAY */
@@ -489,6 +494,65 @@ spinBtnEl.addEventListener("click",()=>{
   },3000);
 });
 </script>
+<script>
+document.getElementById("importExcel").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(evt){
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, {type: "array"});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {defval:""});
+
+        if(rows.length === 0){
+            alert("❌ File Excel trống");
+            return;
+        }
+
+        // RESET TOÀN BỘ
+        defaultItems = [];
+        items = [];
+        results = [];
+        round = 1;
+
+        rows.forEach(r=>{
+            // TỰ ĐỘNG NHẬN CỘT
+            let code = r.code || r["Mã số"] || r["Ma so"] || r["ID"];
+            let name = r.name || r["Họ tên"] || r["Ho ten"] || r["Tên"];
+
+            if(code && name){
+                defaultItems.push({
+                    code: String(code).padStart(5,"0"),
+                    name: String(name).trim()
+                });
+            }
+        });
+
+        if(defaultItems.length === 0){
+            alert("❌ Không đọc được cột Mã số / Họ tên");
+            return;
+        }
+
+        items = [...defaultItems];
+
+        // LƯU LOCALSTORAGE ĐẦY ĐỦ
+        localStorage.setItem("ITEMS", JSON.stringify(items));
+        localStorage.setItem("RESULTS", JSON.stringify(results));
+        localStorage.setItem("ROUND", 1);
+
+        renderTable();
+        document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
+
+        alert("✅ Import thành công " + defaultItems.length + " người");
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </body>
 </html>
