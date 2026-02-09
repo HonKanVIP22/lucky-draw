@@ -493,7 +493,8 @@ spinBtnEl.addEventListener("click",()=>{
     horse.style.animation="horseRun 12s linear infinite";
   },3000);
 });
-</script>
+</script>  
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
 document.getElementById("importExcel").addEventListener("change", function(e){
     const file = e.target.files[0];
@@ -506,7 +507,7 @@ document.getElementById("importExcel").addEventListener("change", function(e){
         const workbook = XLSX.read(data, {type: "array"});
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, {defval:""});
-
+        console.log("EXCEL ROWS:", rows);
         if(rows.length === 0){
             alert("❌ File Excel trống");
             return;
@@ -518,32 +519,33 @@ document.getElementById("importExcel").addEventListener("change", function(e){
         results = [];
         round = 1;
 
-        rows.forEach(r=>{
-            // TỰ ĐỘNG NHẬN CỘT
-         let code =
-  r["Mã số"] ||
-  r["Ma so"] ||
-  r["CODE"] ||
-  r["Code"] ||
-  r["ID"] ||
-  r.code;
+   rows.forEach(r=>{
+    // chuẩn hóa key (xóa khoảng trắng + viết thường)
+    let keys = {};
+    Object.keys(r).forEach(k=>{
+        keys[k.trim().toLowerCase()] = r[k];
+    });
 
-let name =
-  r["Họ tên"] ||
-  r["Ho ten"] ||
-  r["NAME"] ||
-  r["Name"] ||
-  r["Tên"] ||
-  r.name;
+    let code =
+        keys["mã số"] ||
+        keys["ma so"] ||
+        keys["code"] ||
+        keys["id"];
 
+    let name =
+        keys["họ tên"] ||
+        keys["ho ten"] ||
+        keys["name"] ||
+        keys["tên"];
 
-            if(code && name){
-                defaultItems.push({
-                    code: String(code).padStart(5,"0"),
-                    name: String(name).trim()
-                });
-            }
+    if(code && name){
+        defaultItems.push({
+            code: String(code).trim().padStart(5,"0"),
+            name: String(name).trim()
         });
+    }
+});
+
 
         if(defaultItems.length === 0){
             alert("❌ Không đọc được cột Mã số / Họ tên");
@@ -566,7 +568,5 @@ let name =
     reader.readAsArrayBuffer(file);
 });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </body>
 </html>
