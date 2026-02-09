@@ -275,8 +275,6 @@ th,td{padding:14px}
   <input id="drawCount" type="number" value="1" min="1">
   <button class="export" onclick="exportExcel()">📥 Xuất Excel</button>
   <button class="reset" onclick="resetAll()">🔄 Reset</button>
-  <input type="file" id="importExcel" accept=".xlsx">
-
 </div>
 
 <div id="winnerBox">
@@ -332,7 +330,7 @@ th,td{padding:14px}
 </div>
 
 <script>
-let defaultItems=[
+const defaultItems=[
  {code:"99991",name:"Nguyễn Văn Kan"},
  {code:"00002",name:"Trần Thị Ngân"},
  {code:"00003",name:"Lê Văn C"},
@@ -340,7 +338,6 @@ let defaultItems=[
  {code:"00005",name:"Hoàng Văn E"},
  {code:"00006",name:"Hoàng Văn kon"},
 ];
-
 
 let items=JSON.parse(localStorage.getItem("ITEMS"))||[...defaultItems];
 let results=JSON.parse(localStorage.getItem("RESULTS"))||[];
@@ -352,7 +349,7 @@ function spinDigits(target){
   let i=0;
   let it=setInterval(()=>{
     d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
-    if(++i>60){
+    if(++i>40){
       clearInterval(it);
       target.code.split("").forEach((n,j)=>d[j].innerText=n);
     }
@@ -397,6 +394,7 @@ function showWinner(item,prizeValue,roundNo){
     renderTable();
   },4000);
 }
+
 
 function renderTable(){
   resultTable.innerHTML="";
@@ -468,16 +466,13 @@ function resetAll(){
 
   items = [...defaultItems];
   results = [];
-  round = 1;
+  round = 1; // ⭐ RESET SỐ ĐỢT
 
-  localStorage.setItem("ITEMS", JSON.stringify(items));
-  localStorage.setItem("RESULTS", JSON.stringify(results));
-  localStorage.setItem("ROUND", 1);
+  localStorage.setItem("ROUND", round);
 
   renderTable();
   document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
-
 
 
 /* THAN TAI + NGỰA CHẠY NHANH KHI QUAY */
@@ -493,80 +488,7 @@ spinBtnEl.addEventListener("click",()=>{
     horse.style.animation="horseRun 12s linear infinite";
   },3000);
 });
-</script>  
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script>
-document.getElementById("importExcel").addEventListener("change", function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function(evt){
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, {type: "array"});
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, {defval:""});
-        console.log("EXCEL ROWS:", rows);
-        if(rows.length === 0){
-            alert("❌ File Excel trống");
-            return;
-        }
-
-        // RESET TOÀN BỘ
-        defaultItems = [];
-        items = [];
-        results = [];
-        round = 1;
-
-   rows.forEach(r=>{
-    // chuẩn hóa key (xóa khoảng trắng + viết thường)
-    let keys = {};
-    Object.keys(r).forEach(k=>{
-        keys[k.trim().toLowerCase()] = r[k];
-    });
-
-    let code =
-        keys["mã số"] ||
-        keys["ma so"] ||
-        keys["code"] ||
-        keys["id"];
-
-    let name =
-        keys["họ tên"] ||
-        keys["ho ten"] ||
-        keys["name"] ||
-        keys["tên"];
-
-    if(code && name){
-        defaultItems.push({
-            code: String(code).trim().padStart(5,"0"),
-            name: String(name).trim()
-        });
-    }
-});
-
-
-        if(defaultItems.length === 0){
-            alert("❌ Không đọc được cột Mã số / Họ tên");
-            return;
-        }
-
-        items = [...defaultItems];
-
-        // LƯU LOCALSTORAGE ĐẦY ĐỦ
-        localStorage.setItem("ITEMS", JSON.stringify(items));
-        localStorage.setItem("RESULTS", JSON.stringify(results));
-        localStorage.setItem("ROUND", 1);
-
-        renderTable();
-        document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
-
-        alert("✅ Import thành công " + defaultItems.length + " người");
-    };
-
-    reader.readAsArrayBuffer(file);
-});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </body>
 </html>
