@@ -520,8 +520,22 @@ document.getElementById("importExcel").addEventListener("change", function(e){
 
         rows.forEach(r=>{
             // TỰ ĐỘNG NHẬN CỘT
-            let code = r.code || r["Mã số"] || r["Ma so"] || r["ID"];
-            let name = r.name || r["Họ tên"] || r["Ho ten"] || r["Tên"];
+         let code =
+  r["Mã số"] ||
+  r["Ma so"] ||
+  r["CODE"] ||
+  r["Code"] ||
+  r["ID"] ||
+  r.code;
+
+let name =
+  r["Họ tên"] ||
+  r["Ho ten"] ||
+  r["NAME"] ||
+  r["Name"] ||
+  r["Tên"] ||
+  r.name;
+
 
             if(code && name){
                 defaultItems.push({
