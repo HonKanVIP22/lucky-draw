@@ -390,10 +390,9 @@ function draw(){
       spinDigits(item);
 
       // Hiện kết quả sau khi slot dừng xong
-      setTimeout(()=>{
-        showWinner(item,prizeValue,currentRound);
-      },5800);
-
+  spinDigits(item, ()=>{
+  showWinner(item, prizeValue, currentRound);
+});
     },delay);
 
     delay+=7000; // mỗi lượt cách nhau
