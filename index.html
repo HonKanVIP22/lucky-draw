@@ -344,21 +344,40 @@ let results=JSON.parse(localStorage.getItem("RESULTS"))||[];
 let round=parseInt(localStorage.getItem("ROUND"))||1;
 window.onload=renderTable;
 
+/* ===== SLOT MACHINE 5 GIÂY ===== */
 function spinDigits(target){
-  let d=document.querySelectorAll(".digit");
-  let i=0;
-  let it=setInterval(()=>{
-    d.forEach(x=>x.innerText=Math.floor(Math.random()*10));
-    if(++i>40){
-      clearInterval(it);
-      target.code.split("").forEach((n,j)=>d[j].innerText=n);
+  const digits=document.querySelectorAll(".digit");
+  const spinTime=5000;          // ⏱ 5 giây
+  const intervalTime=60;        // tốc độ quay
+  const stopDelay=300;          // dừng từng số
+
+  let start=Date.now();
+
+  const timer=setInterval(()=>{
+    digits.forEach(d=>{
+      d.innerText=Math.floor(Math.random()*10);
+    });
+
+    if(Date.now()-start>=spinTime){
+      clearInterval(timer);
+
+      // DỪNG TỪNG Ô – SLOT MACHINE
+      target.code.split("").forEach((num,i)=>{
+        setTimeout(()=>{
+          digits[i].innerText=num;
+        },i*stopDelay);
+      });
     }
-  },120);
+  },intervalTime);
 }
 
 function draw(){
   let count=parseInt(drawCount.value)||1;
-  if(count>items.length){alert("Không đủ người");return;}
+  if(count>items.length){
+    alert("Không đủ người");
+    return;
+  }
+
   let prizeValue=prize.value;
   let delay=0;
   let currentRound=round;
@@ -367,10 +386,17 @@ function draw(){
     setTimeout(()=>{
       let i=Math.floor(Math.random()*items.length);
       let item=items.splice(i,1)[0];
+
       spinDigits(item);
-      setTimeout(()=>showWinner(item,prizeValue,currentRound),2000);
+
+      // Hiện kết quả sau khi slot dừng xong
+      setTimeout(()=>{
+        showWinner(item,prizeValue,currentRound);
+      },5800);
+
     },delay);
-    delay+=4500;
+
+    delay+=7000; // mỗi lượt cách nhau
   }
 
   round++;
@@ -386,7 +412,7 @@ function showWinner(item,prizeValue,roundNo){
     winnerBox.style.display="none";
     results.push({
       prize: prizeValue,
-      round: roundNo,   // 👈 thêm round
+      round: roundNo,
       ...item
     });
     localStorage.setItem("ITEMS",JSON.stringify(items));
@@ -394,7 +420,6 @@ function showWinner(item,prizeValue,roundNo){
     renderTable();
   },4000);
 }
-
 
 function renderTable(){
   resultTable.innerHTML="";
@@ -426,19 +451,13 @@ function renderTable(){
     });
   });
 }
+
 function toggle(cls){
   document.querySelectorAll("."+cls).forEach(r=>{
     r.style.display = r.style.display==="table-row" ? "none":"table-row";
   });
 }
-function exportCSV(){
-  let csv="Prize,Code,Name\n";
-  results.forEach(r=>csv+=`${r.prize},${r.code},${r.name}\n`);
-  let a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv]));
-  a.download="ketqua_quayso.csv";
-  a.click();
-}
+
 function exportExcel(){
   if(results.length===0){
     alert("Chưa có dữ liệu để xuất");
@@ -463,30 +482,27 @@ function resetAll(){
   if(!confirm("RESET toàn bộ dữ liệu?")) return;
 
   localStorage.clear();
+  items=[...defaultItems];
+  results=[];
+  round=1;
 
-  items = [...defaultItems];
-  results = [];
-  round = 1; // ⭐ RESET SỐ ĐỢT
-
-  localStorage.setItem("ROUND", round);
-
+  localStorage.setItem("ROUND",round);
   renderTable();
   document.querySelectorAll(".digit").forEach(d=>d.innerText="0");
 }
 
-
-/* THAN TAI + NGỰA CHẠY NHANH KHI QUAY */
+/* THAN TÀI + NGỰA TĂNG TỐC KHI QUAY */
 const spinBtnEl=document.getElementById("spinBtn");
 const thanTai=document.querySelector(".thantai-box");
 const horse=document.querySelector(".horse-run");
 
 spinBtnEl.addEventListener("click",()=>{
-  thanTai.style.animation="thantaiSwing .6s ease-in-out infinite";
-  horse.style.animation="horseRun 6s linear infinite";
+  thanTai.style.animation="thantaiSwing .5s ease-in-out infinite";
+  horse.style.animation="horseRun 5s linear infinite";
   setTimeout(()=>{
     thanTai.style.animation="thantaiSwing 3s ease-in-out infinite";
     horse.style.animation="horseRun 12s linear infinite";
-  },3000);
+  },5000);
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
